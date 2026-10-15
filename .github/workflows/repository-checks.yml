@@ -1,0 +1,23 @@
+name: Repository checks
+
+on:
+  push:
+    branches: [main, develop, "feat/**", "fix/**", "docs/**"]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  structure-and-docs:
+    name: Structure and documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Validate repository structure and local documentation links
+        run: python3 scripts/check_repository.py

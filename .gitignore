@@ -1,0 +1,32 @@
+# Credenciales y configuración local
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Dependencias y compilación
+node_modules/
+dist/
+build/
+bin/
+coverage/
+*.test
+*.out
+__pycache__/
+*.pyc
+
+# Herramientas y sistema
+.DS_Store
+.idea/
+.vscode/
+*.log
+*.tmp
+
+# Datos locales y copias de base
+.local/
+backups/
+*.dump
+
+# Material original del curso: se conserva local, no se publica
+/PROYECTOS_APLICACIONES_DISTRIBUIDAS_I.pdf
