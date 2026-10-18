@@ -1,0 +1,85 @@
+<template id="app-shell">
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#/generar">ContentAI-PYME</a>
+      <div class="account">
+        <span data-bind="account"></span>
+        <button class="text-button" data-action="logout">Salir</button>
+      </div>
+      <button class="menu-button button" aria-expanded="false" aria-controls="navigation" data-action="menu">Menú</button>
+    </header>
+    <div class="workspace">
+      <nav id="navigation" class="sidebar" aria-label="Navegación principal">
+        <a href="#/generar" data-route="generar">Generar contenido</a>
+        <a href="#/historial" data-route="historial">Historial</a>
+        <a href="#/productos" data-route="productos">Productos y servicios</a>
+        <a href="#/empresa" data-route="empresa">Mi empresa</a>
+      </nav>
+      <main id="main" class="workarea"></main>
+    </div>
+  </div>
+</template>
+
+<template id="auth-shell">
+  <div class="auth-shell">
+    <div class="auth-scene" aria-hidden="true">
+      <div class="auth-haze"></div>
+      <div class="auth-orb"></div>
+      <div class="auth-stars"></div>
+    </div>
+    <header class="auth-header">
+      <a class="brand" href="#/login">ContentAI<span>—</span>PYME</a>
+      <span class="auth-prototype">Prototipo interactivo</span>
+    </header>
+    <div class="auth-layout"><main id="main" class="login-card"></main></div>
+    <footer class="auth-footer">Tu negocio. Tu voz. Nuevas posibilidades.</footer>
+  </div>
+</template>
+
+<template id="context-panel">
+  <aside class="context-panel" aria-label="Resumen del contexto">
+    <h2>Resumen del contexto</h2>
+    <p class="help">Datos de ejemplo</p>
+    <p data-bind="company"></p>
+    <p data-bind="product"></p>
+    <p data-bind="benefits"></p>
+    <p data-bind="audience"></p>
+    <p data-bind="tone"></p>
+    <p data-bind="restrictions"></p>
+    <p class="assurance">No se inventarán precios, descuentos ni garantías</p>
+    <div class="stack">
+      <a class="button" href="#/empresa">Editar negocio</a>
+      <a class="button" href="#/productos">Añadir/editar producto o servicio</a>
+    </div>
+  </aside>
+</template>
+
+<template id="content-reader">
+  <div class="content-reader">
+    <p class="help">Resultado ilustrativo; no generado por IA · Datos de ejemplo</p>
+    <p class="generated-text" id="generated-text" data-bind="text"></p>
+  </div>
+</template>
+
+<template id="catalog-item">
+  <article class="catalog-item">
+    <dl>
+      <div><dt data-bind="type"></dt><dd class="item-title"><span data-bind="name"></span> <span class="help">· Dato de ejemplo</span></dd></div>
+      <div><dt>Qué incluye</dt><dd data-bind="features"></dd></div>
+      <div><dt>Beneficios</dt><dd data-bind="benefits"></dd></div>
+    </dl>
+    <div class="actions">
+      <a class="button" data-link="edit">Editar</a>
+      <a class="button" data-link="generate">Generar contenido</a>
+    </div>
+  </article>
+</template>
+
+<template id="history-item">
+  <article class="history-item">
+    <div class="history-title"><h3 data-bind="title"></h3><span class="badge">Guardado</span></div>
+    <p class="help">Dato de ejemplo · <time data-bind="date"></time></p>
+    <p data-bind="excerpt"></p>
+    <a class="button" data-link="detail">Ver contenido</a>
+  </article>
+</template>

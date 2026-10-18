@@ -1,0 +1,49 @@
+<template id="page-product">
+  <header class="page-heading">
+    <h1 id="page-title" tabindex="-1" data-bind="title">Crear producto o servicio</h1>
+    <p data-bind="description">Productos y servicios / Crear · Describe con precisión qué se promocionará.</p>
+  </header>
+  <form id="product-form" novalidate>
+    <section class="section">
+      <h2>Información</h2>
+      <div class="field">
+        <label for="type">Tipo <span aria-hidden="true">*</span></label>
+        <select id="type" name="type" required aria-describedby="type-error">
+          <option value="">Selecciona producto o servicio</option>
+          <option>Producto</option>
+          <option>Servicio</option>
+        </select>
+        <small class="field-error" id="type-error" hidden></small>
+      </div>
+      <div class="field">
+        <label for="name">Nombre <span aria-hidden="true">*</span></label>
+        <input id="name" name="name" placeholder="Nombre del producto o servicio" required aria-describedby="name-error">
+        <small class="field-error" id="name-error" hidden></small>
+      </div>
+      <div class="field">
+        <label for="description">Descripción <span aria-hidden="true">*</span></label>
+        <textarea id="description" name="description" placeholder="Describe qué ofreces" rows="3" required aria-describedby="description-error"></textarea>
+        <small class="field-error" id="description-error" hidden></small>
+      </div>
+      <div class="field">
+        <label for="features">Características o qué incluye <span aria-hidden="true">*</span></label>
+        <textarea id="features" name="features" placeholder="Características del producto o servicio" rows="3" required aria-describedby="features-error"></textarea>
+        <small class="field-error" id="features-error" hidden></small>
+      </div>
+      <div class="field">
+        <label for="benefits">Beneficios <span aria-hidden="true">*</span></label>
+        <textarea id="benefits" name="benefits" placeholder="Qué aporta a tus clientes" rows="3" required aria-describedby="benefits-error"></textarea>
+        <small class="field-error" id="benefits-error" hidden></small>
+      </div>
+      <div class="field">
+        <label for="restrictions">Restricciones (opcional)</label>
+        <textarea id="restrictions" name="restrictions" placeholder="Afirmaciones que deben evitarse" rows="3"></textarea>
+      </div>
+    </section>
+    <div class="actions">
+      <button class="button primary" type="submit" name="intent" value="save">Guardar</button>
+      <button class="button" type="submit" name="intent" value="generate">Guardar y generar</button>
+      <a class="button" href="#/productos">Cancelar</a>
+    </div>
+  </form>
+</template>

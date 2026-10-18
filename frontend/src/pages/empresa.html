@@ -1,0 +1,56 @@
+<template id="page-company">
+  <header class="page-heading">
+    <h1 id="page-title" tabindex="-1">Mi empresa</h1>
+    <p>Guarda el contexto que utilizará la IA para redactar.</p>
+  </header>
+  <p class="help">* Campos obligatorios. · Datos de ejemplo.</p>
+  <form id="company-form" novalidate>
+    <section class="section">
+      <h2>Empresa</h2>
+      <div class="field">
+        <label for="name">Nombre comercial <span aria-hidden="true">*</span></label>
+        <input id="name" name="name" placeholder="Nombre del negocio" required aria-describedby="name-error">
+        <small class="field-error" id="name-error" hidden></small>
+      </div>
+      <div class="field">
+        <label for="activity">Actividad económica <span aria-hidden="true">*</span></label>
+        <input id="activity" name="activity" placeholder="Actividad del negocio" required aria-describedby="activity-error">
+        <small class="field-error" id="activity-error" hidden></small>
+      </div>
+      <div class="field">
+        <label for="description">Descripción del negocio (opcional)</label>
+        <textarea id="description" name="description" placeholder="Describe tu negocio" rows="3"></textarea>
+      </div>
+    </section>
+    <section class="section">
+      <h2>Público</h2>
+      <div class="field">
+        <label for="audienceName">Nombre identificador del público <span aria-hidden="true">*</span></label>
+        <input id="audienceName" name="audienceName" placeholder="Nombre del público" required aria-describedby="audienceName-error">
+        <small class="field-error" id="audienceName-error" hidden></small>
+      </div>
+      <div class="field">
+        <label for="audience">Descripción del público objetivo <span aria-hidden="true">*</span></label>
+        <textarea id="audience" name="audience" placeholder="A quién se dirige tu negocio" rows="3" required aria-describedby="audience-error"></textarea>
+        <small class="field-error" id="audience-error" hidden></small>
+      </div>
+    </section>
+    <section class="section">
+      <h2>Marca</h2>
+      <div class="field">
+        <label for="tone">Tono de comunicación <span aria-hidden="true">*</span></label>
+        <input id="tone" name="tone" placeholder="Cómo quieres comunicarte" required aria-describedby="tone-error">
+        <small class="field-error" id="tone-error" hidden></small>
+      </div>
+      <div class="field">
+        <label for="restrictions">Restricciones de comunicación (opcional)</label>
+        <textarea id="restrictions" name="restrictions" placeholder="Afirmaciones que deben evitarse" rows="3"></textarea>
+      </div>
+    </section>
+    <div class="actions">
+      <button class="button primary" type="submit" name="intent" value="save">Guardar cambios</button>
+      <button class="button" type="submit" name="intent" value="continue">Guardar y continuar</button>
+      <button class="text-button" type="reset">Cancelar cambios</button>
+    </div>
+  </form>
+</template>

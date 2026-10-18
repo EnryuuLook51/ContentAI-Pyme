@@ -1,0 +1,67 @@
+/* Base compartida. Las variables se definen en tokens.css. */
+* { box-sizing: border-box; }
+html { -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 var(--font); }
+button, input, textarea, select { font: inherit; }
+button, a { touch-action: manipulation; }
+button, .button { -webkit-user-select: none; user-select: none; }
+button { cursor: pointer; }
+a { color: var(--primary); }
+button:disabled { opacity: .6; cursor: not-allowed; }
+:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+[hidden] { display: none !important; }
+
+/* Tipografía. */
+h1, h2, h3, p { margin: 0; }
+h1 { font-size: 28px; font-weight: 600; line-height: 1.25; letter-spacing: -.5px; }
+h2 { font-size: 20px; line-height: 1.4; font-weight: 600; }
+h3 { font-size: 16px; font-weight: 600; }
+p, dd { overflow-wrap: anywhere; }
+dl { display: grid; gap: 16px; margin: 0; }
+dt { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+dd { margin: 0; }
+.help { color: var(--muted); font-size: 12px; font-weight: 400; }
+
+/* Formularios y validación. */
+form { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field label { font-weight: 500; }
+input, textarea, select { width: 100%; min-width: 0; padding: 11px 12px; border: 1px solid var(--control-border); border-radius: 6px; color: var(--ink); background: var(--surface); line-height: 1.5; }
+input, select { min-height: 48px; }
+textarea { resize: vertical; min-height: 104px; }
+input::placeholder, textarea::placeholder { color: #64748b; opacity: 1; }
+input[readonly] { background: var(--bg); border-color: var(--border); }
+[aria-invalid="true"] { border-color: var(--error); background: var(--error-soft); }
+.field-error { color: var(--error); font-size: 12px; }
+
+/* Controles y utilidades de composición. */
+.actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 11px 16px; border: 1px solid #64748b; border-radius: 8px; color: var(--primary); background: var(--surface); text-align: center; text-decoration: none; font-weight: 500; line-height: 1.5; }
+.button.primary { color: #fff; background: var(--primary); border-color: var(--primary); }
+.button:active, .text-button:active { filter: brightness(.9); }
+.text-button { border: 0; padding: 8px; min-height: 44px; background: transparent; color: var(--muted); }
+.stack { display: grid; gap: 12px; }
+
+/* Estados y mensajes accesibles. */
+.notice { padding: 16px; border-left: 3px solid var(--primary); border-radius: 6px; background: #eff6ff; color: var(--primary); }
+.notice.success { color: var(--success); background: var(--success-soft); border-color: var(--success); }
+.notice.warning { color: var(--warning); background: var(--warning-soft); border-color: var(--warning); }
+.notice.error { color: var(--error); background: var(--error-soft); border-color: var(--error); }
+.badge { padding: 4px 10px; border-radius: 6px; color: var(--success); background: var(--success-soft); font-size: 12px; white-space: nowrap; }
+#notifications:not(:empty) { position: fixed; z-index: 10; bottom: max(24px, env(safe-area-inset-bottom)); right: max(24px, env(safe-area-inset-right)); max-width: min(420px, calc(100% - 32px)); padding: 16px 20px; background: var(--ink); color: white; border-radius: 8px; box-shadow: 0 4px 18px #0f172a22; }
+.skip-link { position: fixed; z-index: 20; left: 16px; top: 0; padding: 12px; background: var(--surface); transform: translateY(-120%); }
+.skip-link:focus { transform: translateY(0); }
+
+@media (hover: hover) and (pointer: fine) {
+  .button:hover { background: var(--bg); }
+  .button.primary:hover { background: var(--primary-hover); }
+  .text-button:hover { color: var(--primary); }
+}
+@media (max-width: 700px) {
+  h1 { font-size: 24px; }
+  .actions { align-items: stretch; flex-direction: column; }
+  .actions > * { width: 100%; }
+}
+/* Evita el zoom automático al escribir sin desactivar el zoom de accesibilidad. */
+@media (pointer: coarse) { input, textarea, select { font-size: 16px; } }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }

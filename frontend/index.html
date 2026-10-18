@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+    <meta name="theme-color" content="#F8FAFC">
+    <meta name="description" content="Prototipo de ContentAI-PYME: gestiona tu negocio y prepara contenido comercial.">
+    <title>ContentAI-PYME</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./src/styles/tokens.css">
+    <link rel="stylesheet" href="./src/styles/global.css">
+    <link rel="stylesheet" href="./src/styles/app.css">
+    <link rel="stylesheet" href="./src/styles/login.css">
+    <script type="module" src="./src/app.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Saltar al contenido</a>
+    <div id="app"><p id="startup-status" role="status">Cargando ContentAI-PYME…</p></div>
+    <template id="startup-error">
+      <main class="login-card" id="main">
+        <h1>No se pudo cargar la interfaz</h1>
+        <p role="alert">Comprueba la conexión con el servidor y vuelve a intentarlo. Abre el prototipo desde el servidor local, no como archivo.</p>
+        <a class="button" href="./index.html">Volver a intentar</a>
+      </main>
+    </template>
+    <div id="notifications" role="status" aria-live="polite"></div>
+    <noscript>Activa JavaScript para utilizar este prototipo.</noscript>
+  </body>
+</html>

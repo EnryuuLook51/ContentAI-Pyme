@@ -1,0 +1,55 @@
+<template id="page-generator">
+  <header class="page-heading">
+    <h1 id="page-title" tabindex="-1">Generar contenido</h1>
+    <p>Selecciona qué promocionar y revisa el contexto. · Paso 1 de 3: selección.</p>
+  </header>
+  <form id="generation-form" novalidate>
+    <div class="generator-grid">
+      <section class="generation-fields">
+        <h2>Qué quieres promocionar</h2>
+        <div class="field">
+          <label for="product">Producto o servicio <span aria-hidden="true">*</span></label>
+          <select id="product" name="product" required aria-describedby="product-error"></select>
+          <small class="field-error" id="product-error" hidden></small>
+        </div>
+        <div class="field">
+          <label for="audience">Público objetivo <span aria-hidden="true">*</span></label>
+          <select id="audience" name="audience" required aria-describedby="audience-error"></select>
+          <small class="field-error" id="audience-error" hidden></small>
+        </div>
+        <div class="field">
+          <label for="contentType">Tipo de contenido</label>
+          <input id="contentType" name="contentType" value="Publicación para redes sociales" readonly>
+        </div>
+        <div class="field">
+          <label for="goal">Objetivo comercial <span aria-hidden="true">*</span></label>
+          <input id="goal" name="goal" value="Conseguir consultas sobre el servicio" required aria-describedby="goal-error">
+          <small class="field-error" id="goal-error" hidden></small>
+        </div>
+      </section>
+      <div id="context"></div>
+    </div>
+    <div class="stack generator-actions">
+      <button type="submit" class="button primary">Generar publicación</button>
+      <a class="button" href="#/productos">Volver a productos y servicios</a>
+    </div>
+    <p class="help">Prototipo local: se preparará un resultado ilustrativo, no generado por IA.</p>
+  </form>
+</template>
+
+<template id="page-requirements">
+  <header class="page-heading">
+    <h1 id="page-title" tabindex="-1">Generar contenido</h1>
+    <p>Completa los datos faltantes antes de solicitar una publicación.</p>
+  </header>
+  <div class="notice warning" role="status">Faltan datos. Completa los requisitos antes de generar.</div>
+  <ul class="requirements">
+    <li data-bind="products"></li>
+    <li>Empresa y público objetivo: completa los campos obligatorios del perfil.</li>
+  </ul>
+  <div class="actions">
+    <a class="button primary" href="#/empresa">Editar negocio</a>
+    <a class="button" href="#/producto/nuevo">Añadir producto o servicio</a>
+    <a class="button" href="#/productos">Volver</a>
+  </div>
+</template>

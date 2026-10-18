@@ -1,0 +1,22 @@
+<template id="page-detail">
+  <header class="page-heading">
+    <h1 id="page-title" tabindex="-1">Detalle de contenido</h1>
+    <p>Historial / Detalle · Texto guardado y contexto utilizado.</p>
+  </header>
+  <section class="result-section">
+    <h2>Contenido</h2>
+    <dl>
+      <div><dt>Empresa</dt><dd data-bind="company"></dd></div>
+      <div><dt data-bind="productType"></dt><dd data-bind="product"></dd></div>
+      <div><dt>Tipo</dt><dd data-bind="type"></dd></div>
+      <div><dt>Objetivo</dt><dd data-bind="goal"></dd></div>
+      <div><dt>Versión</dt><dd data-bind="version"></dd></div>
+    </dl>
+    <div data-component="reader"></div>
+  </section>
+  <div class="actions">
+    <button type="button" class="button primary" data-action="copy">Copiar texto</button>
+    <a class="button" href="#/historial">Volver al historial</a>
+    <a class="button" href="#/generar">Crear otra publicación</a>
+  </div>
+</template>

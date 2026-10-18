@@ -1,0 +1,28 @@
+<template id="page-login">
+  <div class="auth-eyebrow"><span></span> TU ESPACIO CREATIVO</div>
+  <header class="page-heading">
+    <h1 id="page-title" tabindex="-1">Iniciar sesión</h1>
+    <p>Dale a las ideas de tu negocio un nuevo espacio.</p>
+  </header>
+  <div class="notice warning" role="status" data-state="expired" hidden>Tu sesión ha expirado. Vuelve a iniciar sesión.</div>
+  <form id="login-form" novalidate>
+    <div class="field">
+      <label for="email">Correo electrónico <span aria-hidden="true">*</span></label>
+      <input id="email" name="email" type="email" placeholder="tu@negocio.com" autocomplete="username" autocapitalize="none" required aria-describedby="email-error">
+      <small class="field-error" id="email-error" hidden></small>
+    </div>
+    <div class="field">
+      <label for="password">Contraseña <span aria-hidden="true">*</span></label>
+      <div class="auth-password">
+        <input id="password" name="password" type="password" placeholder="Tu contraseña" autocomplete="current-password" required aria-describedby="password-error">
+        <button class="auth-password-toggle" type="button" data-action="password" aria-label="Mostrar contraseña" aria-controls="password" aria-pressed="false">Mostrar</button>
+      </div>
+      <small class="field-error" id="password-error" hidden></small>
+    </div>
+    <button class="button primary auth-submit" type="submit">Iniciar sesión <span aria-hidden="true">↗</span></button>
+    <div class="auth-demo">
+      <span class="auth-demo-title">ACCESO DE DEMOSTRACIÓN</span>
+      <p class="help">Usa cualquier correo válido y una contraseña de prueba.</p>
+    </div>
+  </form>
+</template>
