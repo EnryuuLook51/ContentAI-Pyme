@@ -1,32 +1,50 @@
-# Credenciales y configuración local
+# --- Credenciales y configuración local ---
 .env
 .env.*
 !.env.example
 *.pem
 *.key
+*.p12
+*.jks
 
-# Dependencias y compilación
+# --- Dependencias y compilación ---
 node_modules/
+vendor/
 dist/
 build/
+out/
 bin/
 coverage/
-*.test
-*.out
-__pycache__/
-*.pyc
+.nyc_output/
 
-# Herramientas y sistema
+# --- Cachés y artefactos de herramientas ---
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.phpunit.result.cache
+.php-cs-fixer.cache
+
+# --- Sistema y editores ---
 .DS_Store
+Thumbs.db
 .idea/
 .vscode/
 *.log
 *.tmp
+*.swp
+*~
 
-# Datos locales y copias de base
+# --- Datos locales y copias de base ---
 .local/
 backups/
 *.dump
+*.sqlite
+*.sqlite3
 
-# Material original del curso: se conserva local, no se publica
+# --- Diseños (se mantienen solo en local) ---
+*.pen
+
+# --- Material original del curso: se conserva local, no se publica ---
 /PROYECTOS_APLICACIONES_DISTRIBUIDAS_I.pdf

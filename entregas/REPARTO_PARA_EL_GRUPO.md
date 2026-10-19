@@ -1,307 +1,197 @@
-# ContentAI-PYME · Grupo 07
+# ContentAI-PYME — Reparto de trabajo
 
-## Organización del avance para el lunes
+**Equipo:** Diego, Honores, More, Yoshua y Franco.
 
-**Presentación:** lunes 19 de octubre de 2026.
+**Plazo del avance:** miércoles 21 de octubre de 2026.
 
-**Objetivo:** demostrar un recorrido funcional: iniciar sesión → configurar empresa, marca y audiencia → registrar producto o servicio → generar una publicación contextualizada con IA → guardar y volver a consultar el contenido.
+**Backend:** PHP con Laravel. **Base de datos:** PostgreSQL. **Frontend:** React + TypeScript.
 
-Este es el primer hito de tres. Su equivalencia con el tercio solicitado debe confirmarse con el docente. El documento asigna trabajo pendiente; no acredita funcionalidades ya implementadas.
+**Descripción principal:** [ContentAI-PYME](../ContentAI-PYME.md).
 
-### Reparto y fechas internas
+## Objetivo común
 
-- **Enrique:** base backend y acceso. Viernes 16, 18:00.
-- **Gonzalo:** datos y contexto empresarial. Viernes 16, 20:00.
-- **Yoshua:** generación contextual, IA y worker. Sábado 17, 15:00.
-- **Jorge:** pantallas de acceso, empresa y catálogo. Sábado 17, 12:00.
-- **Franco:** generador, biblioteca e integración. Sábado 17, 18:00.
+Completar el recorrido: iniciar sesión → registrar contexto empresarial → registrar producto/servicio → solicitar una publicación contextualizada → consultar el resultado guardado.
 
-Las horas corresponden a la hora local acordada por el equipo. Cada integrante confirma disponibilidad; la estimación inicial es de 15–20 horas de trabajo por persona hasta el cierre.
+El avance incluye implementación, requisitos y diagramas. No agregar campañas, varios formatos, edición avanzada, aprobación, métricas ni publicación automática a este corte.
 
-### Acuerdos comunes
+Primero cerrar requisitos, diagramas, responsabilidades y contratos. El repositorio solo contiene documentación; las tareas de implementación se ejecutarán cuando se autorice crear la estructura y empezar el desarrollo. Las ramas existentes no se modifican.
 
-- Stack propuesto: React + TypeScript, Go y PostgreSQL. Confirmarlo antes de iniciar.
-- Cuentas y empresas ficticias precargadas; no habrá registro público en este corte.
-- API bajo `/api/v1`, errores uniformes, sesión y protección CSRF compartidas.
-- Datos persistentes en PostgreSQL; ningún módulo se da por terminado solo con simulaciones.
-- Integración diaria: no esperar al domingo para unir los módulos.
-- No cambiar cuerpos de API, nombres de campos o migraciones sin avisar al equipo.
-- No incluir claves API, contraseñas de demostración ni tokens en documentos o repositorio.
+## Diego — Laravel, acceso y permisos
 
-### Calendario de control
+### Implementación
 
-- **Miércoles 14:** repositorio, contrato mínimo y entorno base.
-- **Jueves 15:** acceso y primera escritura real en la base de datos.
-- **Viernes 16:** recorrido completo con generación simulada y resultado persistido.
-- **Sábado 17:** conectar IA real y cerrar funcionalidades a las 18:00.
-- **Domingo 18:** pruebas, correcciones y ensayo. Sin funciones nuevas.
-- **Lunes 19:** presentar la versión probada, sin cambios de último momento.
+1. Acordar versiones compatibles de PHP/Laravel y configuración del backend.
+2. Preparar conexión PostgreSQL, configuración de entorno y comprobación de salud.
+3. Implementar login, logout y usuario actual con sesión, CSRF y contraseñas hasheadas.
+4. Definir cómo obtener la empresa autorizada desde el usuario autenticado.
+5. Proporcionar autorización reutilizable para todos los módulos del negocio.
+6. Coordinar cuentas ficticias con More y ejecución del worker con Franco.
+7. Probar credenciales incorrectas, sesión vencida, logout, CSRF y acceso cruzado.
 
-Fuera de este corte: campañas, múltiples formatos, editor, aprobación, estadísticas, publicación en redes y despliegue público.
+### Requisitos y diagramas
 
----
+- Redactar requisitos funcionales de acceso y no funcionales de seguridad.
+- Definir errores y criterios de aceptación del módulo.
+- Elaborar el flujo de autenticación con sesión, CSRF y rechazos.
 
-## Parte 1 · Capillo Enrique Diego
+### Coordinar con
 
-**Responsabilidad:** base backend, autenticación y acceso a la empresa propia.
+- **Honores:** cookies, CSRF, sesión expirada y respuestas de acceso.
+- **More:** relación usuario/empresa y datos ficticios.
+- **Yoshua y Franco:** protección de contenido y generación.
 
-**Fecha límite:** viernes 16 de octubre, 18:00.
+### Se considera terminado cuando
 
-### Qué implementar
+Un usuario válido entra, una sesión cerrada deja de servir y la empresa A no accede a recursos de B. El backend se ejecuta siguiendo instrucciones comprobadas.
 
-1. Crear la estructura backend y configuración de entorno sin secretos.
-2. Dejar API y PostgreSQL arrancables, con conexión y endpoint de salud.
-3. Crear migraciones de usuarios y sesiones, coordinadas con el seed de Gonzalo.
-4. Implementar login y logout con contraseñas hasheadas y sesión persistente.
-5. Proteger operaciones con sesión y CSRF; asociar usuario con empresa propia.
-6. Proporcionar al resto del backend un mecanismo común para obtener la empresa autorizada.
-7. Apoyar el arranque del worker y las comprobaciones de permisos.
+## Honores — Frontend React
 
-### Interfaz que debes entregar
+### Implementación
 
-- `POST /api/v1/auth/login`
-- `POST /api/v1/auth/logout`
-- `GET /api/v1/auth/me`
-- Mecanismo documentado para obtener y enviar el token CSRF.
-- Endpoint de salud y configuración de ejemplo sin credenciales reales.
+1. Preparar una sola aplicación React + TypeScript con componentes y cliente HTTP compartidos.
+2. Implementar login/logout y manejo de sesión expirada.
+3. Construir formularios de empresa, marca y audiencia inicial.
+4. Construir listado, creación y edición de productos/servicios.
+5. Implementar generador con selección de producto, audiencia, objetivo y resumen autorizado.
+6. Enviar solicitudes idempotentes, consultar estados y mostrar resultado o error.
+7. Construir biblioteca y detalle consumiendo contenido guardado.
+8. Resolver carga, vacío, validación, error y éxito; probar teclado y pantalla pequeña.
 
-### Coordinación
+### Requisitos y diagramas
 
-- Con **Gonzalo:** relaciones entre usuario y empresa, migraciones y dos cuentas ficticias.
-- Con **Jorge y Franco:** cookie de sesión, CSRF y manejo de sesión expirada.
-- Con **Yoshua:** arranque independiente del worker y acceso a configuración.
+- Definir casos de uso del propietario y requisitos de interfaz.
+- Elaborar diagrama de casos de uso y navegación de pantallas.
+- Relacionar cada pantalla con sus requisitos y contratos.
 
-### Evidencia de terminado
+### Coordinar con
 
-- Un usuario válido inicia sesión; credenciales incorrectas se rechazan.
-- Después de cerrar sesión, la sesión anterior ya no permite acceder.
-- Una petición sin sesión no accede a información empresarial.
-- La cuenta A no puede consultar recursos de la empresa B.
-- Otra persona puede arrancar el backend siguiendo tus instrucciones.
+- **Diego:** acceso, sesión y CSRF.
+- **More:** campos, validación y contratos del negocio.
+- **Yoshua:** biblioteca y detalle.
+- **Franco:** contexto, solicitud, estado y errores de generación.
 
-### Qué presentar el lunes
+### Se considera terminado cuando
 
-Explicar el acceso y la arquitectura base; demostrar una sesión válida y el rechazo de un acceso no autorizado. Tiempo aproximado: 1 minuto.
+El recorrido funciona desde el navegador contra API y base reales, se conserva al recargar y no quedan pantallas esperando indefinidamente. Los mocks no cuentan como integración terminada.
 
-**No corresponde todavía:** registro público, login social o administración avanzada de usuarios.
+## More — PostgreSQL y contexto empresarial
 
----
+### Implementación
 
-## Parte 2 · More Sulca Gonzalo
+1. Definir el modelo relacional y coordinar migraciones de Laravel con el equipo.
+2. Preparar dos empresas ficticias: agrícola y mantenimiento informático.
+3. Implementar consulta/edición de empresa, marca y audiencia inicial.
+4. Implementar creación, listado y edición de productos/servicios.
+5. Validar campos y referencias propias en el servidor.
+6. Definir claves foráneas, unicidad y restricciones contra referencias entre empresas.
+7. Apoyar la definición de relaciones de contenido y solicitudes de generación.
 
-**Responsabilidad:** modelo de datos y API del contexto comercial.
+### Requisitos y diagramas
 
-**Fecha límite:** viernes 16 de octubre, 20:00.
+- Elaborar entidad-relación y diccionario de datos.
+- Definir campos, tipos, obligatoriedad, cardinalidades y reglas de integridad.
+- Aportar requisitos y aceptación del contexto/catálogo a Yoshua.
 
-### Qué implementar
+### Coordinar con
 
-1. Diseñar el modelo recortado de empresa, marca, audiencia y catálogo.
-2. Crear migraciones de tu módulo y coordinar el orden con Enrique, Yoshua y Franco.
-3. Preparar datos ficticios de dos empresas: agrícola y mantenimiento informático.
-4. Implementar consulta y edición de empresa, perfil de marca y audiencia inicial.
-5. Implementar creación, listado y edición de productos y servicios.
-6. Validar campos, longitudes y pertenencia de todos los registros a la empresa autorizada.
-7. Apoyar la integración de formularios cuando tus endpoints estén listos.
+- **Diego:** usuario, empresa, sesión y seed.
+- **Honores:** formularios, validaciones y respuestas.
+- **Franco:** campos del contexto y lectura consistente del snapshot.
+- **Yoshua:** relaciones de contenido y trazabilidad del modelo.
 
-### Interfaz que debes entregar
+### Se considera terminado cuando
 
-- `GET /api/v1/company` y `PATCH /api/v1/company`.
-- `GET /api/v1/company/brand` y `PUT /api/v1/company/brand`.
-- `GET /api/v1/audiences`, `GET /api/v1/audiences/{id}` y `PATCH /api/v1/audiences/{id}`.
-- `GET /api/v1/catalog`, `POST /api/v1/catalog`, `GET /api/v1/catalog/{id}` y `PATCH /api/v1/catalog/{id}`.
+Se guardan y recuperan datos desde la web y una empresa no consulta ni utiliza productos o audiencias ajenos. El modelo, las migraciones y el diccionario coinciden.
 
-### Datos mínimos
+## Yoshua — Contenidos, requisitos y trazabilidad
 
-- **Empresa:** nombre, rubro, descripción y propuesta de valor.
-- **Marca:** tono y restricciones de comunicación.
-- **Audiencia:** nombre del segmento y necesidades.
-- **Catálogo:** tipo producto/servicio, nombre, descripción, características y beneficios.
+### Implementación
 
-### Coordinación
+1. Definir y crear contenidos y primeras versiones persistentes.
+2. Acordar con Franco la relación entre solicitud, contenido y versión.
+3. Proporcionar el guardado de versión y finalización consistente del resultado, sin duplicados por solicitud.
+4. Implementar biblioteca y detalle mediante API, con autorización empresarial.
+5. Dejar el texto original inmutable y recuperable después de reiniciar servicios.
+6. Probar persistencia, propiedad, entrega repetida y consultas.
 
-- Con **Enrique:** usuario, empresa y acceso autorizado.
-- Con **Jorge:** contrato y validaciones de formularios.
-- Con **Yoshua y Franco:** datos usados para generar y mostrar el resumen del contexto.
+### Requisitos y diagramas
 
-### Evidencia de terminado
+1. Consolidar requisitos funcionales y no funcionales aportados por todos.
+2. Registrar ID, prioridad, responsable, reglas, errores y criterios de aceptación.
+3. Mantener matriz requisito → módulo → diagrama → prueba → estado.
+4. Elaborar actividad del flujo de contenido, incluyendo validación, espera y fallo.
+5. Revisar que los diagramas y contratos usen los mismos nombres y estados.
 
-- Guardar y recuperar datos después de recargar y reiniciar la API.
-- Crear un producto desde la web y comprobar su persistencia.
-- Rechazar lectura, edición o uso de un registro de otra empresa.
-- Entregar ER, migraciones y seed reproducibles.
+### Coordinar con
 
-**Exposición:** mostrar datos persistidos y explicar el contexto comercial. Aproximadamente 1 minuto. No implementar campañas ni resultados comerciales todavía.
+- **Franco:** persistencia atómica, duplicados y estados del resultado.
+- **Honores:** listado y detalle de biblioteca.
+- **More:** claves, relaciones, diccionario y restricciones.
+- **Diego:** permisos y sesión; **todos:** revisión de sus requisitos.
 
----
+### Se considera terminado cuando
 
-## Parte 3 · Novoa Polo Yoshua Yampier
+Cada generación exitosa deja una sola primera versión, se reabre desde la biblioteca y los requisitos tienen aceptación y pruebas identificadas. No implementar edición o aprobación en este corte.
 
-**Responsabilidad:** generación contextual y procesamiento asíncrono.
+## Franco — Motor contextual, IA y resiliencia
 
-**Fecha límite:** sábado 17 de octubre, 15:00.
+Esta es la parte de mayor complejidad técnica del reparto. No incluye implementar toda la interfaz ni la biblioteca.
 
-### Qué implementar
+### Implementación
 
-1. Crear un proveedor simulado determinista, claramente identificado como SIMULADO.
-2. Integrar un proveedor real con clave solo en el worker y timeout.
-3. Construir contexto con empresa, marca, audiencia y producto propios, leídos por el servidor.
-4. Guardar un snapshot inmutable del contexto y la versión de plantilla.
-5. Implementar alta idempotente de trabajo y consulta de estado.
-6. Ejecutar el worker como proceso independiente, con arrendamiento temporal y token de intento.
-7. Guardar primera versión y éxito del trabajo en una sola transacción, sin duplicados por trabajo.
-8. Gestionar fallo, timeout y recuperación acotada de trabajos abandonados; impedir guardados de intentos vencidos.
+1. Construir contexto autorizado con empresa, marca, audiencia y producto/servicio.
+2. Guardar snapshot inmutable y versión de plantilla por solicitud.
+3. Crear interfaz de proveedor y adaptadores real/simulado.
+4. Implementar alta idempotente, validación y límites atómicos de solicitudes.
+5. Integrar trabajos/cola de Laravel y ejecución del worker.
+6. Implementar estado consultable sin bloquear toda la llamada HTTP.
+7. Configurar timeout del proveedor, timeout del trabajo, intentos y recuperación compatibles.
+8. Resolver entregas repetidas, concurrencia y respuestas tardías sin guardar versiones duplicadas.
+9. Integrar con Yoshua la persistencia atómica del resultado y la finalización de la solicitud.
+10. Evitar que el fallo de encolado deje solicitudes invisibles o atascadas; contemplar recuperación.
+11. Probar IA real, errores externos, timeout, reinicio y duplicados.
+12. Coordinar integración técnica sin asumir la corrección completa de módulos ajenos.
 
-### Interfaz que debes entregar
+### Requisitos y diagramas
 
-- `POST /api/v1/generation-preview`: resumen autorizado del contexto, sin instrucciones internas ni secretos.
-- `POST /api/v1/generation-jobs`: respuesta `202` con `job_id` y `content_id`.
-- `GET /api/v1/generation-jobs/{id}`: estado y resultado o error seguro.
-- Un solo formato para este corte: `social_post`.
+- Definir requisitos de contexto, procesamiento, idempotencia, límites y recuperación.
+- Elaborar componentes: SPA, Laravel, PostgreSQL, cola/worker y proveedor IA.
+- Elaborar secuencia: validación → snapshot → encolado → proveedor → persistencia → consulta.
+- Incluir caminos de error y límites de confianza.
 
-### Coordinación
+### Coordinar con
 
-- Con **Gonzalo:** lectura de contexto y propiedad de registros.
-- Con **Franco:** contrato de generación, tablas de contenido/versiones y visualización del estado.
-- Con **Enrique:** configuración, arranque y sesiones.
+- **Diego:** identidad, configuración, acceso y ejecución del worker.
+- **More:** esquema del snapshot y referencias empresariales válidas.
+- **Yoshua:** modelo del resultado, guardado, unicidad y transacciones.
+- **Honores:** solicitud, vista previa, polling, resultado y errores públicos.
 
-### Evidencia de terminado
+### Se considera terminado cuando
 
-- El texto utiliza el producto y el tono registrados, sin inventar descuentos ni certificaciones.
-- Existe al menos una generación real, con contexto y resultado persistidos.
-- La misma clave de idempotencia no crea dos trabajos.
-- Un timeout termina con un estado claro, no con un “procesando” permanente.
-- Una respuesta de un intento vencido no sobrescribe el vigente.
+Una generación real utiliza contexto propio, conserva snapshot y resultado, no duplica versiones y se recupera de fallos de forma acotada. No prometer que el proveedor externo ejecutará o cobrará exactamente una vez si no ofrece esa garantía.
 
-**Exposición:** mostrar snapshot, procesamiento y resultado. Aproximadamente 2 minutos. No implementar otros formatos, campañas o regeneración todavía.
+## Contratos que deben acordar
 
----
+Todas las rutas del negocio llevan prefijo `/api/v1`; documentar por separado el mecanismo CSRF del framework.
 
-## Parte 4 · Honores Torres Jorge Alberto
+| Responsable | Rutas |
+|---|---|
+| Diego | `POST /auth/login`, `POST /auth/logout`, `GET /auth/me` |
+| More | `GET/PATCH /company`, `GET/PUT /company/brand`, `GET /audiences`, `GET/PATCH /audiences/{id}` |
+| More | `GET/POST /catalog`, `GET/PATCH /catalog/{id}` |
+| Yoshua | `GET /contents`, `GET /contents/{id}` |
+| Franco | `POST /generation-preview`, `POST /generation-jobs`, `GET /generation-jobs/{id}` |
 
-**Responsabilidad:** interfaz de acceso y administración del negocio.
+Definir cuerpos, identificadores, validaciones, estados, errores y ejemplos compartidos. No cambiar contratos sin coordinar con quienes los consumen.
 
-**Fecha límite:** sábado 17 de octubre, 12:00.
+## Entregables comunes
 
-### Qué implementar
+- [ ] Requisitos y reglas de negocio revisados por los responsables.
+- [ ] Diagramas coherentes con el alcance y el modelo.
+- [ ] Código integrado con API y PostgreSQL reales cuando se implemente.
+- [ ] Datos ficticios y migraciones reproducibles.
+- [ ] Recorrido completo de acceso, contexto, generación y consulta.
+- [ ] Pruebas de acceso cruzado, persistencia, duplicados y fallo de IA.
+- [ ] Instrucciones de ejecución comprobadas y pendientes explícitos.
 
-1. Acordar con Franco navegación, componentes y cliente HTTP compartido.
-2. Crear pantalla de login, cierre de sesión y manejo de sesión expirada.
-3. Crear formulario de empresa, marca y audiencia inicial.
-4. Crear listado y formularios de producto o servicio.
-5. Conectar las pantallas a la API real, incluyendo sesión y CSRF.
-6. Mostrar estados de carga, vacío, error y guardado.
-7. Verificar diseño en pantalla pequeña y navegación básica con teclado.
-
-### Pantallas que debes entregar
-
-- Inicio de sesión.
-- Empresa e identidad de marca.
-- Audiencia inicial.
-- Catálogo con listado, creación y edición.
-- Navegación hacia generador y biblioteca, que implementa Franco.
-
-### Coordinación
-
-- Con **Franco:** estructura web, estilos básicos, componentes y rutas; no crear dos bases frontend.
-- Con **Enrique:** autenticación, CSRF y respuestas de acceso.
-- Con **Gonzalo:** campos de formularios, validaciones y API de negocio.
-
-### Evidencia de terminado
-
-- Iniciar sesión y editar el contexto comercial desde el navegador.
-- Crear y editar un producto sin herramientas externas de API.
-- Recargar y ver los datos guardados, no solo el estado local de la interfaz.
-- Mostrar mensajes útiles cuando falla una validación o vence la sesión.
-- Usar el recorrido principal en una pantalla pequeña sin bloqueos visuales.
-
-### Qué presentar el lunes
-
-Modificar un dato de la empresa o producto y comprobar que permanece guardado. Tiempo aproximado: 1 minuto.
-
-**No corresponde todavía:** editor de contenido, campañas, panel de métricas, animaciones ni un sistema visual completo.
-
----
-
-## Parte 5 · Saldarriaga Guerrero Franco
-
-**Responsabilidad:** generador, biblioteca e integración del recorrido completo.
-
-**Fecha límite:** sábado 17 de octubre, 18:00.
-
-### Qué implementar
-
-1. Crear la base web y el cliente HTTP compartido con Jorge.
-2. Coordinar el contrato mínimo y registrar cambios antes de integrarlos.
-3. Crear el generador: producto/servicio, audiencia, objetivo y resumen del contexto autorizado.
-4. Enviar la solicitud con clave idempotente y consultar el estado hasta resultado o fallo.
-5. Mostrar el texto como contenido seguro y distinguir generación real de simulada.
-6. Crear migraciones de contenidos y versiones, coordinadas con Yoshua.
-7. Implementar listado/detalle y las pantallas de biblioteca para reabrir la primera versión guardada.
-8. Integrar web, API, worker y DB con Enrique; ejecutar pruebas y preparar la demo.
-
-### Interfaz que debes entregar
-
-- `GET /api/v1/contents`.
-- `GET /api/v1/contents/{id}`.
-- Pantalla del generador conectada a los endpoints de Yoshua.
-- Biblioteca y detalle con solo la primera versión IA de cada contenido.
-
-### Coordinación
-
-- Con **Jorge:** rutas, cliente HTTP y componentes comunes.
-- Con **Yoshua:** claves idempotentes, estados, referencias del resultado y guardado de versiones.
-- Con **Gonzalo:** selección del producto y audiencia propios.
-- Con **Enrique:** arranque completo, sesión y pruebas de permisos.
-
-### Evidencia de terminado
-
-- Seleccionar un producto, generar y visualizar el contenido.
-- Recargar y abrir el mismo resultado desde la biblioteca.
-- Mostrar el fallo del trabajo sin bloquear indefinidamente la interfaz.
-- Ejecutar el sistema siguiendo el README desde otro equipo.
-- Tener pruebas registradas y un respaldo de la demostración real.
-
-**Exposición:** reabrir contenido, explicar persistencia, integración y siguientes hitos. Aproximadamente 1–2 minutos. No implementar edición, aprobación ni estadísticas todavía.
-
----
-
-## Cierre conjunto · Pruebas y presentación
-
-### Obligatorio antes del domingo por la noche
-
-1. Iniciar sesión, guardar contexto y registrar un producto desde la web.
-2. Generar una publicación real usando esos datos y conservar su snapshot.
-3. Recargar y abrir el resultado desde la biblioteca.
-4. Reiniciar servicios y comprobar que los datos permanecen.
-5. Repetir una solicitud con la misma clave sin duplicar el trabajo.
-6. Comprobar rechazo de acceso a producto, trabajo y contenido ajenos.
-7. Simular un fallo externo y mostrar un desenlace controlado.
-8. Ejecutar el entorno desde otro equipo usando el README.
-9. Completar dos recorridos exitosos y ensayar la exposición de 6–8 minutos.
-
-### Qué entrega cada integrante
-
-- Código integrado y revisado por otra persona.
-- Instrucciones de ejecución y variables de configuración sin secretos.
-- Pruebas de su parte y evidencia reproducible.
-- Pendientes y limitaciones identificados; una simulación no cuenta como integración real.
-
-### Reglas para resolver bloqueos
-
-- Avisar el mismo día: qué falla, qué se intentó y qué ayuda se necesita.
-- Si el viernes no existe el recorrido simulado persistente, priorizar integración y detener mejoras visuales.
-- El sábado a las 18:00 se congelan funciones; el domingo solo se corrigen fallos.
-- Si falla la IA en vivo, mostrar el error y abrir una generación real previa. Nunca presentar texto simulado como llamada real.
-
-### Material del lunes
-
-- Aplicación local funcional y cuentas ficticias compartidas por canal privado.
-- README, modelo de datos y diagrama de arquitectura del corte.
-- Lista de pruebas realizadas y pendientes reales.
-- Video o capturas de respaldo sin secretos ni datos sensibles.
-
-**Orden de exposición:** Enrique → Gonzalo → Jorge → Yoshua → Franco.
-
-**Siguiente hito:** campañas, múltiples formatos, edición, versiones y aprobación. Después: evaluación, métricas y despliegue final.
-
-La coordinación verifica la integración; cada integrante sigue siendo responsable de implementar, probar y explicar su propio módulo.
+No guardar contraseñas, claves API, tokens ni datos personales reales en documentos o repositorio. Identificar siempre los resultados simulados.
