@@ -1,0 +1,53 @@
+.panel-heading { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-bottom: 8px; }
+.panel-eyebrow { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+.panel-heading h1 { font-size: clamp(28px, 3vw, 40px); margin-bottom: 12px; }
+.panel-heading h1:focus { outline: none; }
+.panel-intro { color: var(--muted); max-width: 660px; }
+.panel-heading > .button { flex-shrink: 0; }
+.panel-heading > .button span { font-size: 22px; line-height: 1; }
+.panel-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 24px; }
+.panel-grid > .section { align-content: start; padding: 28px; gap: 24px; }
+.panel-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.panel-section-heading > .help { flex-shrink: 0; }
+.panel-section-heading > a { font-size: 12px; white-space: nowrap; text-underline-offset: 4px; }
+.profile-progress { display: block; width: 100%; height: 6px; border: 0; background: #ffffff10; color: var(--accent); accent-color: var(--accent); }
+.profile-progress::-webkit-progress-bar { background: #ffffff10; }
+.profile-progress::-webkit-progress-value { background: linear-gradient(90deg, #8325d9, #c59cff); }
+.profile-progress::-moz-progress-bar { background: var(--accent); }
+.profile-checklist { display: grid; gap: 8px; list-style: none; padding: 0; margin: 0; }
+.profile-checklist a { display: grid; grid-template-columns: 20px minmax(0, 1fr) auto; align-items: center; gap: 12px; min-height: 64px; color: var(--ink); text-decoration: none; }
+.profile-check { color: var(--muted); font-size: 19px; text-align: center; }
+.profile-status { color: var(--warning); background: var(--warning-soft); padding: 3px 7px; font-size: 10px; }
+[data-complete="true"] .profile-check { color: var(--success); }
+[data-complete="true"] .profile-status { color: var(--success); background: var(--success-soft); }
+.format-shortcuts { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.format-shortcuts a { display: flex; align-items: center; min-height: 78px; padding: 16px; border: 1px solid var(--border); color: var(--ink); background: #ffffff03; text-decoration: none; font-size: 13px; }
+.recent-contents { list-style: none; padding: 0; margin: 0; }
+.recent-contents li { border-top: 1px solid var(--border); }
+.recent-content { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 24px 0; color: var(--ink); text-decoration: none; }
+.recent-content-title { min-width: 0; }
+.recent-content-title h3 { margin-bottom: 6px; }
+.recent-content-meta { display: flex; align-items: center; gap: 16px; flex-shrink: 0; }
+.recent-content .badge[data-status="Aprobado"] { color: var(--success); background: var(--success-soft); border-color: #97dfb430; }
+.recent-content .badge[data-status="Borrador"] { color: var(--warning); background: var(--warning-soft); border-color: #ebcb9130; }
+.recent-content .badge[data-status="Descartado"] { color: var(--muted); background: #ffffff08; border-color: var(--border); }
+@media (hover: hover) and (pointer: fine) {
+  .format-shortcuts a:hover { background: var(--accent-soft); border-color: #b78aff88; }
+  .profile-checklist a:hover { color: var(--accent); }
+  .recent-content:hover h3 { color: var(--accent); }
+}
+@media (max-width: 1200px) {
+  .panel-grid { grid-template-columns: minmax(0, 1fr); }
+  .profile-checklist a { min-height: 56px; }
+}
+@media (max-width: 700px) {
+  .panel-heading { flex-direction: column; align-items: stretch; }
+  .panel-heading > .button { width: 100%; }
+  .panel-grid > .section { padding: 20px 16px; }
+  .panel-section-heading { flex-wrap: wrap; }
+  .profile-checklist a { gap: 8px; font-size: 12px; }
+  .profile-status { font-size: 9px; padding: 3px 5px; }
+  .format-shortcuts { gap: 10px; }
+  .format-shortcuts a { padding: 12px; min-height: 78px; font-size: 12px; }
+  .recent-content { align-items: flex-start; flex-direction: column; gap: 12px; padding: 20px 0; }
+}

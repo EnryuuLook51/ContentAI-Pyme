@@ -1,0 +1,50 @@
+<template id="page-panel">
+  <header class="panel-heading">
+    <div>
+      <p class="panel-eyebrow">Panel</p>
+      <h1 id="page-title" tabindex="-1" data-bind="greeting">Hola</h1>
+      <p class="panel-intro" data-bind="intro">Completa el perfil de tu negocio para que la IA escriba con tu voz.</p>
+    </div>
+    <a class="button primary" href="#/generar"><span aria-hidden="true">✧</span> Generar contenido</a>
+  </header>
+  <div class="panel-grid">
+    <section class="section profile-summary" aria-labelledby="profile-title">
+      <div class="panel-section-heading"><h2 id="profile-title">Perfil de tu negocio</h2><span class="help" data-bind="progressCount">0 de 4</span></div>
+      <progress class="profile-progress" max="4" value="0" aria-label="Secciones del perfil completadas"></progress>
+      <ul class="profile-checklist">
+        <li><a href="#/empresa" data-profile="company"><span class="profile-check" aria-hidden="true"></span><span>Información de la empresa</span><span class="profile-status"></span></a></li>
+        <li><a href="#/productos" data-profile="products"><span class="profile-check" aria-hidden="true"></span><span>Productos y servicios</span><span class="profile-status"></span></a></li>
+        <li><a href="#/empresa" data-profile="audience"><span class="profile-check" aria-hidden="true"></span><span>Público objetivo</span><span class="profile-status"></span></a></li>
+        <li><a href="#/empresa" data-profile="brand"><span class="profile-check" aria-hidden="true"></span><span>Identidad de marca</span><span class="profile-status"></span></a></li>
+      </ul>
+      <p class="help">Resumen de los datos de demostración guardados en este navegador.</p>
+    </section>
+    <section class="section" aria-labelledby="formats-title">
+      <h2 id="formats-title">Crear nuevo contenido</h2>
+      <div class="format-shortcuts">
+        <a href="#/generar" data-format="Publicación para redes sociales">Publicación para redes</a>
+        <a href="#/generar" data-format="Descripción de producto">Descripción de producto</a>
+        <a href="#/generar" data-format="Anuncio publicitario">Anuncio publicitario</a>
+        <a href="#/generar" data-format="Correo comercial">Correo comercial</a>
+        <a href="#/generar" data-format="Artículo">Artículo</a>
+        <a href="#/generar" data-format="Landing page">Landing page</a>
+        <a href="#/generar" data-format="Llamado a la acción">Llamado a la acción</a>
+        <a href="#/generar" data-format="Ideas para campaña">Idea de campaña</a>
+      </div>
+    </section>
+  </div>
+  <section class="section" aria-labelledby="recent-title">
+    <div class="panel-section-heading"><h2 id="recent-title">Contenido reciente</h2><a href="#/historial">Ver biblioteca</a></div>
+    <div class="empty" data-state="empty"><p>Todavía no tienes contenido guardado.</p><p>Crea tu primer borrador para verlo aquí y consultarlo después.</p><a class="button" href="#/generar">Crear primer contenido</a></div>
+    <ul class="recent-contents" data-list="recent"></ul>
+  </section>
+</template>
+
+<template id="recent-content-item">
+  <li>
+    <a class="recent-content" data-link="detail">
+      <div class="recent-content-title"><h3 data-bind="title"></h3><p class="help" data-bind="type"></p></div>
+      <div class="recent-content-meta"><span class="badge" data-bind="status"></span><span class="help" data-bind="version"></span></div>
+    </a>
+  </li>
+</template>

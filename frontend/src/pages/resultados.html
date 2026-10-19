@@ -1,0 +1,17 @@
+<template id="page-results">
+  <header class="page-heading"><h1 id="page-title" tabindex="-1">Resultados comerciales</h1><p>Registra observaciones manuales junto al contenido utilizado.</p></header>
+  <div class="notice info" role="status">Campos propuestos para la maqueta. Los datos no se obtienen de redes sociales ni demuestran que la IA haya causado un resultado.</div>
+  <div data-state="no-content" class="empty"><p>Primero guarda un contenido para relacionar una observación.</p><a class="button primary" href="#/generar">Generar contenido</a></div>
+  <form id="observation-form" novalidate>
+    <section class="section"><h2>Registrar observación</h2>
+      <div class="field"><label for="observationContent">Contenido relacionado <span aria-hidden="true">*</span></label><select id="observationContent" name="contentId" required aria-describedby="observationContent-error"></select><small class="field-error" id="observationContent-error" hidden></small></div>
+      <div class="field"><label for="observationDate">Fecha de observación <span aria-hidden="true">*</span></label><input id="observationDate" name="date" type="date" required aria-describedby="observationDate-error"><small class="field-error" id="observationDate-error" hidden></small></div>
+      <div class="field"><label for="impressions">Impresiones (opcional)</label><input id="impressions" name="impressions" type="number" min="0" step="1" placeholder="Sin dato" aria-describedby="impressions-error"><small class="field-error" id="impressions-error" hidden></small></div>
+      <div class="field"><label for="clicks">Clics (opcional)</label><input id="clicks" name="clicks" type="number" min="0" step="1" placeholder="Sin dato" aria-describedby="clicks-error"><small class="field-error" id="clicks-error" hidden></small></div>
+      <div class="field"><label for="notes">Observaciones (opcional)</label><textarea id="notes" name="notes" rows="3" placeholder="Escribe una observación" aria-describedby="notes-help notes-error"></textarea><small id="notes-help" class="help">Introduce al menos una métrica o una observación. Cero es un dato válido.</small><small class="field-error" id="notes-error" hidden></small></div>
+      <div class="actions"><button class="button primary" type="submit">Guardar observación</button><a class="button" data-link="detail">Ver contenido seleccionado</a></div>
+    </section>
+  </form>
+  <section class="section"><h2>Registros anteriores</h2><p class="help">Se muestran los registros del contenido seleccionado.</p><p class="empty" data-state="empty">Sin observaciones registradas para este contenido.</p><div class="stack" data-list="observations"></div></section>
+  <a class="button" href="#/historial">Volver a la biblioteca de contenido</a>
+</template>

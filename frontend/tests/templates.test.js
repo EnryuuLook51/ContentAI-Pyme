@@ -7,7 +7,7 @@ test('las pantallas y componentes tienen plantillas HTML con identificadores ún
   const sources = await Promise.all(templateSources.map(url => readFile(url, 'utf8')));
   const ids = sources.flatMap(source => [...source.matchAll(/<template id="([^"]+)"/g)].map(match => match[1]));
   assert.equal(new Set(ids).size, ids.length);
-  for (const id of ['page-login', 'page-company', 'page-products', 'page-product', 'page-generator', 'page-result', 'page-history', 'page-detail', 'page-requirements', 'page-processing', 'page-generation-error', 'page-no-result', 'app-shell', 'auth-shell', 'context-panel', 'content-reader']) {
+  for (const id of ['page-login', 'page-panel', 'recent-content-item', 'page-company', 'page-products', 'page-product', 'page-generator', 'page-result', 'page-history', 'page-detail', 'page-requirements', 'page-processing', 'page-generation-error', 'page-no-result', 'page-review', 'page-version', 'page-campaigns', 'page-campaign', 'page-results', 'app-shell', 'auth-shell', 'context-panel', 'content-reader']) {
     assert.ok(ids.includes(id), `Falta la plantilla ${id}`);
   }
   assert.ok(sources.every(source => !source.includes('<script')));

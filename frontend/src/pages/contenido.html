@@ -11,12 +11,18 @@
       <div><dt>Tipo</dt><dd data-bind="type"></dd></div>
       <div><dt>Objetivo</dt><dd data-bind="goal"></dd></div>
       <div><dt>Versión</dt><dd data-bind="version"></dd></div>
+      <div><dt>Estado editorial</dt><dd data-bind="status"></dd></div>
+      <div><dt>Campaña</dt><dd data-bind="campaign"></dd></div>
+      <div><dt>Canal</dt><dd data-bind="channel"></dd></div>
     </dl>
     <div data-component="reader"></div>
   </section>
   <div class="actions">
     <button type="button" class="button primary" data-action="copy">Copiar texto</button>
+    <a class="button" data-link="review">Revisar y editar</a>
+    <a class="button" data-link="results">Registrar / consultar resultados</a>
     <a class="button" href="#/historial">Volver al historial</a>
-    <a class="button" href="#/generar">Crear otra publicación</a>
+    <a class="button" href="#/generar">Crear otro contenido</a>
   </div>
+  <p class="help">Aprobar no publica el contenido. Las campañas, estados editoriales y métricas son propuestas navegables para la maqueta del producto completo.</p>
 </template>

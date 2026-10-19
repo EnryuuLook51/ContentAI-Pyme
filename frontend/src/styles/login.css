@@ -82,6 +82,7 @@
 .auth-header { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: max(32px, env(safe-area-inset-top)) max(48px, env(safe-area-inset-right)) 0 max(48px, env(safe-area-inset-left)); }
 .auth-header .brand { color: var(--auth-text); font-size: 15px; letter-spacing: -.3px; }
 .auth-header .brand span { color: var(--auth-accent); margin: 0 3px; }
+.auth-header .brand .brand-name { color: var(--auth-text); margin: 0; }
 .auth-prototype { font-size: 11px; color: var(--auth-muted); letter-spacing: .5px; }
 .auth-layout { flex: 1; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr); place-items: center; padding: 64px 24px; }
 .auth-shell .login-card {
@@ -120,7 +121,7 @@
 .auth-shell .login-card:focus-within::after { opacity: .8; }
 .auth-eyebrow { display: flex; align-items: center; gap: 8px; font-size: 9px; font-weight: 500; letter-spacing: 1.7px; color: #d3b8fa; }
 .auth-eyebrow span { width: 5px; height: 5px; border-radius: 50%; background: #c18bff; box-shadow: 0 0 9px #b46aff; }
-.auth-shell .page-heading { gap: 10px; }
+.auth-shell .page-heading { gap: 10px; padding-bottom: 0; border-bottom: 0; }
 .auth-shell .login-card h1 { color: var(--auth-text); font-size: 30px; font-weight: 400; letter-spacing: -1px; }
 .auth-shell .page-heading p { max-width: 270px; color: var(--auth-muted); font-size: 13px; line-height: 1.7; }
 .auth-shell #login-form { gap: 18px; }

@@ -1,0 +1,27 @@
+<template id="page-campaigns">
+  <header class="page-heading"><h1 id="page-title" tabindex="-1">Campañas y canales</h1><p>Organiza el contexto comercial. No se publicará automáticamente.</p></header>
+  <div class="notice info" role="status">Propuesta navegable del producto completo. Datos guardados solo en este navegador; sin conexión con redes sociales.</div>
+  <div class="actions"><a class="button primary" href="#/campana/nueva">Crear campaña</a></div>
+  <section class="section"><h2>Campañas</h2><p class="empty" data-state="empty">Aún no hay campañas registradas. Crea una para organizar el contenido de un objetivo comercial.</p><div class="stack" data-list="campaigns"></div></section>
+  <section class="section">
+    <h2>Canales de comunicación</h2><ul data-list="channels"></ul>
+    <form id="channel-form" novalidate>
+      <div class="field"><label for="channelName">Nombre del canal <span aria-hidden="true">*</span></label><input id="channelName" name="name" placeholder="Ej.: Instagram, WhatsApp o correo" required aria-describedby="channelName-error"><small class="field-error" id="channelName-error" hidden></small></div>
+      <div class="actions"><button class="button" type="submit">Añadir canal</button></div>
+    </form>
+  </section>
+</template>
+
+<template id="page-campaign">
+  <header class="page-heading"><h1 id="page-title" tabindex="-1" data-bind="title">Crear campaña</h1><p>Registra el objetivo y el público. Los canales son referencias, no cuentas conectadas.</p></header>
+  <form id="campaign-form" novalidate>
+    <section class="section"><h2>Información de campaña</h2>
+      <div class="field"><label for="campaignName">Nombre <span aria-hidden="true">*</span></label><input id="campaignName" name="name" required aria-describedby="campaignName-error"><small class="field-error" id="campaignName-error" hidden></small></div>
+      <div class="field"><label for="campaignGoal">Objetivo comercial <span aria-hidden="true">*</span></label><textarea id="campaignGoal" name="goal" rows="3" required aria-describedby="campaignGoal-error"></textarea><small class="field-error" id="campaignGoal-error" hidden></small></div>
+      <div class="field"><label for="campaignAudience">Público <span aria-hidden="true">*</span></label><input id="campaignAudience" name="audience" required aria-describedby="campaignAudience-error"><small class="field-error" id="campaignAudience-error" hidden></small></div>
+      <div class="field"><label for="channelIds">Canales (opcional)</label><select id="channelIds" name="channelIds" multiple size="4" aria-describedby="channelIds-help"></select><small id="channelIds-help" class="help">Puedes seleccionar varios canales. En escritorio usa Ctrl/Cmd; con teclado, Ctrl/Cmd + espacio.</small></div>
+      <a href="#/campanas">Administrar canales</a>
+    </section>
+    <div class="actions"><button class="button primary" type="submit" name="intent" value="save">Guardar campaña</button><button class="button" type="submit" name="intent" value="generate">Guardar y generar contenido</button><a class="button" href="#/campanas">Cancelar</a></div>
+  </form>
+</template>
