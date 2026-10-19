@@ -1,9 +1,41 @@
 import { cloneTemplate, bindText, fillForm } from '../components/templates.js';
-import { hasRequirements } from '../data/store.js';
+import { hasRequirements, CONTENT_TYPES, EDITORIAL_STATES, filterContents, getProfileProgress } from '../data/store.js';
+
+function addOptions(select, items) {
+  for (const item of items) select.add(new Option(typeof item === 'string' ? item : item.name, typeof item === 'string' ? item : item.id));
+}
+
+const dateLabel = value => new Date(value).toLocaleString('es-PE');
 
 export function loginView(expired = false) {
   const view = cloneTemplate('page-login');
   view.querySelector('[data-state="expired"]').hidden = !expired;
+  return view;
+}
+
+export function panelView(state) {
+  const progress = getProfileProgress(state);
+  const view = bindText(cloneTemplate('page-panel'), {
+    greeting: `Hola, ${state.company.name || 'bienvenido'}`,
+    intro: progress.completed === progress.total ? 'Tu perfil está listo. Crea contenido con el contexto de tu negocio.' : 'Completa el perfil de tu negocio para que la IA escriba con tu voz.',
+    progressCount: `${progress.completed} de ${progress.total}`,
+  });
+  view.querySelector('progress').value = progress.completed;
+  for (const link of view.querySelectorAll('[data-profile]')) {
+    const complete = progress.sections[link.dataset.profile];
+    link.dataset.complete = String(complete);
+    link.querySelector('.profile-check').textContent = complete ? '✓' : '○';
+    link.querySelector('.profile-status').textContent = complete ? 'Completado' : 'Pendiente';
+  }
+  for (const link of view.querySelectorAll('[data-format]')) link.href = `#/generar?formato=${encodeURIComponent(link.dataset.format)}`;
+  const recent = [...state.contents].sort((a, b) => new Date(b.versions.at(-1).createdAt) - new Date(a.versions.at(-1).createdAt)).slice(0, 3);
+  view.querySelector('[data-state="empty"]').hidden = recent.length > 0;
+  for (const content of recent) {
+    const item = bindText(cloneTemplate('recent-content-item'), { title: content.product.name, type: content.type, status: content.status, version: `v${content.versions.length}` });
+    item.querySelector('[data-link="detail"]').href = `#/contenido/${encodeURIComponent(content.id)}`;
+    item.querySelector('.badge').dataset.status = content.status;
+    view.querySelector('[data-list="recent"]').append(item);
+  }
   return view;
 }
 
@@ -37,7 +69,7 @@ export function productView(product) {
   return view;
 }
 
-export function contextView(company, product) {
+export function contextView(company, product, campaign, channel) {
   const restrictions = [...new Set([company.restrictions, product.restrictions].filter(Boolean))].join(' · ');
   return bindText(cloneTemplate('context-panel'), {
     company: `${company.name} · ${company.activity}`,
@@ -46,10 +78,12 @@ export function contextView(company, product) {
     audience: `Público · ${company.audience}`,
     tone: `Tono · ${company.tone}`,
     restrictions: `Restricciones · ${restrictions || 'Sin restricciones adicionales'}`,
+    campaign: `Campaña · ${campaign ? `${campaign.name} · Público: ${campaign.audience}` : 'Sin campaña'}`,
+    channel: `Canal · ${channel?.name || 'Sin canal específico'}`,
   });
 }
 
-export function generatorView(state, productId) {
+export function generatorView(state, productId, campaignId, contentType) {
   if (!hasRequirements(state)) {
     return bindText(cloneTemplate('page-requirements'), { products: `Producto o servicio: ${state.products.length ? 'registrado.' : 'falta registrar uno.'}` });
   }
@@ -59,8 +93,28 @@ export function generatorView(state, productId) {
   for (const item of state.products) products.add(new Option(item.name, item.id));
   products.value = product.id;
   view.querySelector('#audience').add(new Option(state.company.audienceName, state.company.audienceName));
-  view.querySelector('#context').append(contextView(state.company, product));
+  addOptions(view.querySelector('#contentType'), CONTENT_TYPES);
+  if (CONTENT_TYPES.includes(contentType)) view.querySelector('#contentType').value = contentType;
+  addOptions(view.querySelector('#campaign'), state.campaigns);
+  const campaign = state.campaigns.find(item => item.id === campaignId);
+  if (campaign) {
+    view.querySelector('#campaign').value = campaign.id;
+    view.querySelector('#goal').value = campaign.goal;
+  }
+  updateGeneratorContext(view, state, true);
   return view;
+}
+
+export function updateGeneratorContext(root, state, resetChannels = false) {
+  const product = state.products.find(item => item.id === root.querySelector('#product').value);
+  const campaign = state.campaigns.find(item => item.id === root.querySelector('#campaign').value);
+  const channelSelect = root.querySelector('#channel');
+  if (resetChannels) {
+    channelSelect.replaceChildren(new Option('Sin canal específico', ''));
+    addOptions(channelSelect, campaign?.channelIds?.length ? state.channels.filter(item => campaign.channelIds.includes(item.id)) : state.channels);
+  }
+  const channel = state.channels.find(item => item.id === channelSelect.value);
+  root.querySelector('#context').replaceChildren(contextView(state.company, product, campaign, channel));
 }
 
 export function contentReader(content) {
@@ -86,15 +140,24 @@ export function resultView(content, status = 'saved') {
   return view;
 }
 
-export function historyView(state) {
+export function historyView(state, filters = {}) {
   const view = cloneTemplate('page-history');
-  view.querySelector('[data-state="empty"]').hidden = state.contents.length > 0;
+  const contents = filterContents(state.contents, filters);
+  addOptions(view.querySelector('#filter-type'), CONTENT_TYPES);
+  addOptions(view.querySelector('#filter-status'), EDITORIAL_STATES);
+  addOptions(view.querySelector('#filter-campaign'), state.campaigns);
+  fillForm(view.querySelector('form'), filters);
+  bindText(view, { count: `${contents.length} contenido(s) encontrado(s)` });
+  view.querySelector('[data-state="empty"]').hidden = contents.length > 0;
+  if (state.contents.length && !contents.length) bindText(view, { emptyTitle: 'No hay coincidencias', emptyDescription: 'Prueba con otros filtros o limpia la búsqueda.' });
   const list = view.querySelector('[data-list="contents"]');
-  for (const content of [...state.contents].reverse()) {
+  for (const content of [...contents].reverse()) {
     const item = bindText(cloneTemplate('history-item'), {
       title: `${content.product.name} · ${content.type}`,
       date: new Date(content.createdAt).toLocaleString('es-PE'),
       excerpt: `${content.text.slice(0, 160)}…`,
+      status: content.status,
+      campaign: `Campaña: ${content.campaign?.name || 'Sin campaña'}`,
     });
     item.querySelector('time').dateTime = content.createdAt;
     item.querySelector('[data-link="detail"]').href = `#/contenido/${encodeURIComponent(content.id)}`;
@@ -108,9 +171,98 @@ export function detailView(content) {
   const view = bindText(cloneTemplate('page-detail'), {
     company: content.company.name, productType: content.product.type, product: content.product.name,
     type: content.type, goal: content.goal,
-    version: `Versión 1 · ${new Date(content.createdAt).toLocaleString('es-PE')}`,
+    version: `Versión ${content.versions.length} · ${dateLabel(content.versions.at(-1).createdAt)}`,
+    status: content.status, campaign: content.campaign?.name || 'Sin campaña', channel: content.channel?.name || 'Sin canal específico',
   });
   view.querySelector('[data-component="reader"]').replaceWith(contentReader(content));
+  view.querySelector('[data-link="review"]').href = `#/revision/${content.id}`;
+  view.querySelector('[data-link="results"]').href = `#/resultados?contenido=${content.id}`;
+  return view;
+}
+
+export function reviewView(content) {
+  if (!content) return detailView(null);
+  const view = bindText(cloneTemplate('page-review'), { context: `${content.product.name} · ${content.type}`, status: `Estado editorial: ${content.status}` });
+  const form = view.querySelector('form');
+  form.dataset.id = content.id;
+  fillForm(form, { text: content.text });
+  view.querySelector('[data-link="detail"]').href = `#/contenido/${content.id}`;
+  for (const version of [...content.versions].reverse()) {
+    const item = bindText(cloneTemplate('version-item'), { title: `Versión ${version.number}${version.number === content.versions.length ? ' · Actual' : ''}`, date: dateLabel(version.createdAt), source: version.source });
+    item.querySelector('[data-link="version"]').href = `#/version/${content.id}/${version.number}`;
+    view.querySelector('[data-list="versions"]').append(item);
+  }
+  return view;
+}
+
+export function versionView(content, number) {
+  const version = content?.versions.find(item => item.number === Number(number));
+  if (!version) return notFoundView('Versión no encontrada', 'Selecciona una versión desde el historial.', 'Volver al historial', 'historial');
+  const view = bindText(cloneTemplate('page-version'), { title: `Versión ${version.number}`, date: dateLabel(version.createdAt), source: version.source });
+  view.querySelector('[data-component="reader"]').replaceWith(contentReader(version));
+  view.querySelector('[data-link="review"]').href = `#/revision/${content.id}`;
+  view.querySelector('[data-link="detail"]').href = `#/contenido/${content.id}`;
+  return view;
+}
+
+export function campaignsView(state) {
+  const view = cloneTemplate('page-campaigns');
+  view.querySelector('[data-state="empty"]').hidden = state.campaigns.length > 0;
+  for (const campaign of state.campaigns) {
+    const item = bindText(cloneTemplate('campaign-item'), { ...campaign, audience: `Público: ${campaign.audience}`, channels: `Canales: ${state.channels.filter(channel => campaign.channelIds.includes(channel.id)).map(channel => channel.name).join(', ') || 'Sin canales asociados'}` });
+    item.querySelector('[data-link="edit"]').href = `#/campana/${campaign.id}`;
+    item.querySelector('[data-link="generate"]').href = `#/generar?campana=${campaign.id}`;
+    item.querySelector('[data-link="contents"]').href = `#/historial?campaign=${campaign.id}`;
+    view.querySelector('[data-list="campaigns"]').append(item);
+  }
+  for (const channel of state.channels) {
+    const item = document.createElement('li');
+    item.textContent = channel.name;
+    view.querySelector('[data-list="channels"]').append(item);
+  }
+  return view;
+}
+
+export function campaignView(state, campaign) {
+  const view = cloneTemplate('page-campaign');
+  const form = view.querySelector('form');
+  form.dataset.id = campaign?.id || '';
+  addOptions(view.querySelector('#channelIds'), state.channels);
+  fillForm(form, campaign || { audience: state.company.audienceName, channelIds: [] });
+  if (campaign) bindText(view, { title: 'Editar campaña' });
+  return view;
+}
+
+export function updateObservationList(root, state) {
+  const id = root.querySelector('#observationContent').value;
+  const list = root.querySelector('[data-list="observations"]');
+  list.replaceChildren();
+  const observations = state.observations.filter(item => item.contentId === id);
+  root.querySelector('[data-state="empty"]').hidden = observations.length > 0;
+  const detail = root.querySelector('[data-link="detail"]');
+  detail.href = `#/contenido/${id}`;
+  detail.hidden = !id;
+  for (const observation of [...observations].reverse()) {
+    const content = state.contents.find(item => item.id === id);
+    const item = bindText(cloneTemplate('observation-item'), {
+      content: `${content.product.name} · ${content.type}`, date: `${observation.date} · Versión ${observation.version}`,
+      impressions: observation.impressions ?? 'Sin dato', clicks: observation.clicks ?? 'Sin dato', notes: observation.notes || 'Sin observaciones adicionales',
+    });
+    item.querySelector('[data-link="detail"]').href = `#/version/${id}/${observation.version}`;
+    list.append(item);
+  }
+}
+
+export function resultsView(state, contentId) {
+  const view = cloneTemplate('page-results');
+  view.querySelector('[data-state="no-content"]').hidden = state.contents.length > 0;
+  view.querySelector('form').hidden = !state.contents.length;
+  addOptions(view.querySelector('#observationContent'), state.contents.map(content => ({ id: content.id, name: `${content.product.name} · ${content.type} · ${content.status}` })));
+  if (state.contents.some(content => content.id === contentId)) view.querySelector('#observationContent').value = contentId;
+  const today = new Date();
+  today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+  view.querySelector('#observationDate').value = today.toISOString().slice(0, 10);
+  updateObservationList(view, state);
   return view;
 }
 

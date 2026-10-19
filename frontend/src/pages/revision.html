@@ -1,0 +1,23 @@
+<template id="page-review">
+  <header class="page-heading"><h1 id="page-title" tabindex="-1">Revisión y versiones</h1><p>Edita el contenido sin perder las versiones anteriores.</p></header>
+  <div class="notice info" role="status">Demostración del producto completo. Aprobar no publica ni envía el contenido a ninguna red.</div>
+  <p data-bind="context"></p><p data-bind="status"></p>
+  <form id="review-form" novalidate>
+    <div class="field"><label for="text">Texto de la versión <span aria-hidden="true">*</span></label><textarea id="text" name="text" rows="12" required aria-describedby="text-error"></textarea><small class="field-error" id="text-error" hidden></small></div>
+    <div class="actions">
+      <button class="button primary" type="submit" name="intent" value="save-version">Guardar nueva versión</button>
+      <button class="button" type="submit" name="intent" value="approve">Aprobar</button>
+      <button class="button" type="submit" name="intent" value="discard">Descartar</button>
+      <a class="button" data-link="detail">Volver al detalle</a>
+    </div>
+  </form>
+  <p class="help">En esta propuesta, el estado editorial se aplica al contenido actual. Editar crea una nueva versión en estado Borrador.</p>
+  <section class="section"><h2>Historial de versiones</h2><div class="stack" data-list="versions"></div></section>
+</template>
+
+<template id="page-version">
+  <header class="page-heading"><h1 id="page-title" tabindex="-1" data-bind="title">Versión de contenido</h1><p>Versión histórica de solo lectura. Consultarla no reemplaza el texto actual.</p></header>
+  <p data-bind="date"></p><p class="help" data-bind="source"></p>
+  <div data-component="reader"></div>
+  <div class="actions"><button type="button" class="button primary" data-action="copy">Copiar texto</button><a class="button" data-link="review">Volver a revisión y versiones</a><a class="button" data-link="detail">Ver contenido actual</a></div>
+</template>

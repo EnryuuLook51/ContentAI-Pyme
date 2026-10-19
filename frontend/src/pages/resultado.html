@@ -6,7 +6,7 @@
   <section class="result-section">
     <h2>Resultado</h2>
     <dl><div><dt>Contexto de generación</dt><dd data-bind="context"></dd></div></dl>
-    <div class="notice success" role="status" data-state="saved">Publicación de demostración guardada en tu historial</div>
+    <div class="notice success" role="status" data-state="saved">Contenido de demostración guardado en tu historial</div>
     <div class="notice warning" role="status" data-state="pending" hidden>Guardado pendiente: no se pudo guardar en este navegador. El borrador sigue disponible en esta sesión.</div>
     <div data-component="reader"></div>
     <h2>Revisión</h2>
@@ -17,17 +17,17 @@
     <a class="button" data-link="detail">Ver contenido guardado</a>
     <button type="button" class="button" data-action="save-again" hidden>Volver a consultar estado</button>
     <a class="button" href="#/historial">Ir al historial</a>
-    <a class="button" href="#/generar">Crear otra publicación</a>
+    <a class="button" href="#/generar">Crear otro contenido</a>
   </div>
 </template>
 
 <template id="page-processing">
   <header class="page-heading">
     <h1 id="page-title" tabindex="-1">Resultado de generación</h1>
-    <p>Solicitud recibida. Estamos preparando tu publicación. · Paso 2 de 3: generación.</p>
+    <p>Solicitud recibida. Estamos preparando tu contenido. · Paso 2 de 3: generación.</p>
   </header>
-  <div class="notice info" role="status">Procesando: estamos preparando tu publicación.</div>
-  <p>Puedes consultar de nuevo el estado de la misma solicitud sin generar otra publicación.</p>
+  <div class="notice info" role="status">Procesando: estamos preparando tu contenido.</div>
+  <p>Puedes consultar de nuevo el estado de la misma solicitud sin generar otra solicitud.</p>
   <div class="actions">
     <button type="button" class="button primary" data-action="check">Volver a consultar estado</button>
     <a class="button" href="#/historial">Ir al historial</a>
@@ -37,7 +37,7 @@
 <template id="page-generation-error">
   <header class="page-heading">
     <h1 id="page-title" tabindex="-1">Resultado de generación</h1>
-    <p>No se pudo generar la publicación. No se guardó contenido.</p>
+    <p>No se pudo generar el contenido. No se guardó contenido.</p>
   </header>
   <div class="notice error" role="alert">Error de generación: inténtalo de nuevo cuando el servicio esté disponible.</div>
   <p>No hay un contenido generado disponible para esta solicitud.</p>
@@ -52,6 +52,6 @@
     <h1 id="page-title" tabindex="-1">Resultado de generación</h1>
     <p>No hay un resultado disponible para esta solicitud.</p>
   </header>
-  <div class="notice warning" role="status">Selecciona un producto o servicio y prepara una publicación.</div>
+  <div class="notice warning" role="status">Selecciona un producto o servicio y prepara un contenido.</div>
   <a class="button primary" href="#/generar">Volver al generador</a>
 </template>

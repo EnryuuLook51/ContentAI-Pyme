@@ -1,7 +1,7 @@
 // Las estructuras viven en HTML. Se cargan una vez y cada uso obtiene una copia.
 export const templateSources = [
   new URL('./templates.html', import.meta.url),
-  ...['login', 'empresa', 'productos', 'producto', 'generar', 'resultado', 'historial', 'contenido', 'no-encontrado']
+  ...['login', 'panel', 'empresa', 'productos', 'producto', 'generar', 'resultado', 'historial', 'contenido', 'no-encontrado', 'revision', 'campanas', 'resultados']
     .map(page => new URL(`../pages/${page}.html`, import.meta.url)),
 ];
 
@@ -41,10 +41,13 @@ export function fillForm(form, values) {
   for (const control of form.elements) {
     if (!control.name || !Object.hasOwn(values, control.name)) continue;
     const value = values[control.name] ?? '';
-    control.value = value;
+    if (!(control instanceof HTMLSelectElement && control.multiple)) control.value = value;
     // Restablecer conserva los datos guardados, no los campos vacíos del HTML.
     if (control instanceof HTMLSelectElement) {
-      for (const option of control.options) option.defaultSelected = option.value === value;
+      for (const option of control.options) {
+        option.defaultSelected = control.multiple ? value.includes(option.value) : option.value === value;
+        option.selected = option.defaultSelected;
+      }
     } else {
       control.defaultValue = value;
     }
