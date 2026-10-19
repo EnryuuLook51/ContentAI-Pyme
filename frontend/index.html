@@ -13,11 +13,28 @@
     <link rel="stylesheet" href="./src/styles/global.css">
     <link rel="stylesheet" href="./src/styles/app.css">
     <link rel="stylesheet" href="./src/styles/login.css">
+    <link rel="stylesheet" href="./src/styles/login-loader.css">
     <script type="module" src="./src/app.js"></script>
   </head>
   <body>
     <a class="skip-link" href="#main">Saltar al contenido</a>
     <div id="app"><p id="startup-status" role="status">Cargando ContentAI-PYME…</p></div>
+    <template id="login-loader">
+      <section class="login-loader" aria-label="Introducción de ContentAI-PYME">
+        <div class="login-loader-content">
+          <div class="login-loader-mark" aria-hidden="true">
+            <span class="loader-line loader-line-outer-left"></span>
+            <span class="loader-line loader-line-inner-left"></span>
+            <span class="loader-line loader-line-inner-right"></span>
+            <span class="loader-line loader-line-outer-right"></span>
+            <span class="loader-core"></span>
+          </div>
+          <p class="login-loader-wordmark" aria-hidden="true">ContentAI<span>—</span>PYME</p>
+          <p class="login-loader-status" role="status">Preparando tu espacio creativo</p>
+        </div>
+        <button type="button" class="login-loader-skip">Omitir animación</button>
+      </section>
+    </template>
     <template id="startup-error">
       <main class="login-card" id="main">
         <h1>No se pudo cargar la interfaz</h1>

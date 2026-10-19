@@ -1,6 +1,7 @@
 import { loadState, saveState, hasRequirements, createExample } from './data/store.js';
 import { shell, validateForm } from './components/ui.js';
 import { loadTemplates } from './components/templates.js';
+import { showLoginLoader, hideLoginLoader } from './components/login-loader.js';
 import { loginView, companyView, productsView, productView, generatorView, contextView, resultView, historyView, detailView, notFoundView } from './pages/views.js';
 
 // El almacenamiento es únicamente del prototipo; no es una sesión segura de backend.
@@ -14,7 +15,18 @@ let resultStatus = 'saved';
 let generationTimer;
 let lastRequest;
 let toastTimer;
+let sceneMotionPaused = false;
+let lastRenderedRoute = null;
 const app = document.querySelector('#app');
+
+function updateSceneMotion() {
+  const scene = app.querySelector('.auth-shell');
+  if (!scene) return;
+  scene.classList.toggle('is-motion-paused', sceneMotionPaused);
+  const toggle = scene.querySelector('[data-action="motion"]');
+  toggle.setAttribute('aria-pressed', String(sceneMotionPaused));
+  toggle.textContent = sceneMotionPaused ? 'Reanudar animación' : 'Pausar animación';
+}
 
 function notify(message) {
   const region = document.querySelector('#notifications');
@@ -58,8 +70,16 @@ function render() {
     default: content = notFoundView();
   }
   app.replaceChildren(shell(content, active, state.company, loggedIn));
+  if (route === 'login' && lastRenderedRoute !== 'login') {
+    // La primera entrada ya inicia la introducción mientras se cargan las plantillas.
+    if (lastRenderedRoute !== null) showLoginLoader();
+  } else if (route !== 'login') {
+    hideLoginLoader();
+  }
+  lastRenderedRoute = route;
+  updateSceneMotion();
   document.title = `${document.querySelector('h1')?.textContent || 'Inicio'} · ContentAI-PYME`;
-  document.querySelector('#page-title')?.focus({ preventScroll: true });
+  if (!app.inert) document.querySelector('#page-title')?.focus({ preventScroll: true });
   window.scrollTo(0, 0);
 }
 
@@ -142,6 +162,10 @@ app.addEventListener('click', async event => {
   const target = event.target.closest('[data-action]');
   if (!target) return;
   switch (target.dataset.action) {
+    case 'motion':
+      sceneMotionPaused = !sceneMotionPaused;
+      updateSceneMotion();
+      break;
     case 'menu': {
       const expanded = target.getAttribute('aria-expanded') !== 'true';
       target.setAttribute('aria-expanded', String(expanded));
@@ -191,11 +215,13 @@ app.addEventListener('click', async event => {
 
 async function start() {
   try {
+    if (!loggedIn) showLoginLoader();
     await loadTemplates();
     window.addEventListener('hashchange', render);
     document.querySelector('#startup-status')?.remove();
     render();
   } catch (error) {
+    hideLoginLoader();
     console.error('No se pudo iniciar el prototipo.', error);
     app.replaceChildren(document.querySelector('#startup-error').content.cloneNode(true));
   }
