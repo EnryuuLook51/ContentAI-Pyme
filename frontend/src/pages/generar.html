@@ -18,24 +18,23 @@
           <small class="field-error" id="audience-error" hidden></small>
         </div>
         <div class="field">
-          <label for="contentType">Tipo de contenido</label>
-          <select id="contentType" name="contentType"></select>
+          <span class="field-label-row">Tipo de contenido</span>
+          <p>Publicación para redes sociales</p>
+          <input type="hidden" id="contentType" name="contentType" value="Publicación para redes sociales">
         </div>
-        <div class="field"><label for="campaign">Campaña (opcional)</label><select id="campaign" name="campaign"><option value="">Sin campaña</option></select></div>
-        <div class="field"><label for="channel">Canal de comunicación (opcional)</label><select id="channel" name="channel"><option value="">Sin canal específico</option></select></div>
         <div class="field">
           <label for="goal">Objetivo comercial <span aria-hidden="true">*</span></label>
           <input id="goal" name="goal" value="Conseguir consultas sobre el servicio" required aria-describedby="goal-error">
           <small class="field-error" id="goal-error" hidden></small>
         </div>
+        <div class="stack generator-actions">
+          <button type="submit" class="button primary">Generar contenido</button>
+          <a class="button" href="#/productos">Volver a productos y servicios</a>
+        </div>
       </section>
       <div id="context"></div>
     </div>
-    <div class="stack generator-actions">
-      <button type="submit" class="button primary">Generar contenido</button>
-      <a class="button" href="#/productos">Volver a productos y servicios</a>
-    </div>
-    <p class="help">Prototipo local: se preparará un resultado ilustrativo, no generado por IA.</p>
+    <p class="help">La generación usa una plantilla local; no consulta un proveedor de IA.</p>
   </form>
 </template>
 

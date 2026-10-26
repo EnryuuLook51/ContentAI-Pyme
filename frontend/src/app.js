@@ -1,4 +1,5 @@
-import { loadState, saveState, hasRequirements, createExample, saveVersion } from './data/store.js';
+import { loadState, saveState, hasRequirements, saveVersion } from './data/store.js';
+import * as api from './data/api.js';
 import { shell, validateForm, showFieldError } from './components/ui.js';
 import { loadTemplates } from './components/templates.js';
 import { showLoginLoader, hideLoginLoader } from './components/login-loader.js';
@@ -9,10 +10,8 @@ let storage;
 try { storage = window.localStorage; } catch { storage = null; }
 let state = loadState(storage);
 let loggedIn = false;
-try { loggedIn = sessionStorage.getItem('contentai-demo-session') === 'active'; } catch { /* Sesión en memoria. */ }
 let currentContent = null;
 let resultStatus = 'saved';
-let generationTimer;
 let lastRequest;
 let toastTimer;
 let sceneMotionPaused = false;
@@ -20,6 +19,17 @@ let lastRenderedRoute = null;
 let lastRenderedHash = '';
 let formDirty = false;
 const app = document.querySelector('#app');
+
+function emptyState() {
+  return {
+    company: { name: '', activity: '', description: '', audienceName: '', audience: '', tone: '', restrictions: '' },
+    products: [],
+    contents: [],
+    campaigns: [],
+    channels: [],
+    observations: [],
+  };
+}
 
 function updateSceneMotion() {
   const scene = app.querySelector('.auth-shell');
@@ -48,50 +58,40 @@ function navigate(route) {
   else location.hash = `/${route}`;
 }
 
+function initialRoute() {
+  const requiredCompanyFields = ['name', 'activity', 'audienceName', 'audience', 'tone'];
+  if (!requiredCompanyFields.every(key => state.company[key]?.trim())) return 'empresa';
+  if (!state.products.length) return 'productos';
+  return 'generar';
+}
+
 function render() {
   if (formDirty && location.hash !== lastRenderedHash && !window.confirm('Tienes cambios sin guardar. ¿Quieres salir de esta pantalla y descartarlos?')) {
     history.replaceState(null, '', lastRenderedHash);
     return;
   }
   const [path, query = ''] = location.hash.slice(2).split('?');
-  const [route = 'panel', id, versionNumber] = (path || 'panel').split('/');
+  const [route = 'generar', id, versionNumber] = (path || 'generar').split('/');
   const params = new URLSearchParams(query);
   if (!loggedIn && route !== 'login') { navigate('login'); return; }
-  if (loggedIn && route === 'login') { navigate('panel'); return; }
+  if (loggedIn && ['login', 'panel'].includes(route)) { navigate(initialRoute()); return; }
   let content;
   let active = route;
   switch (route) {
     case 'login': content = loginView(new URLSearchParams(query).has('expirada')); break;
-    case 'panel': content = panelView(state); break;
+    case 'panel': content = notFoundView(); break;
     case 'empresa': content = companyView(state.company); break;
     case 'productos': content = productsView(state); break;
     case 'producto': {
       active = 'productos';
-      const product = state.products.find(p => p.id === id);
+      const product = state.products.find(p => String(p.id) === id);
       content = id === 'nuevo' || product ? productView(product) : notFoundView('Producto no encontrado', 'Vuelve al catálogo para seleccionar un producto.', 'Volver al catálogo', 'productos');
       break;
     }
-    case 'generar': content = generatorView(state, params.get('producto'), params.get('campana'), params.get('formato')); break;
+    case 'generar': content = generatorView(state, params.get('producto')); break;
     case 'resultado': active = 'generar'; content = resultView(currentContent, resultStatus); break;
     case 'historial': content = historyView(state, Object.fromEntries(params)); break;
-    case 'contenido': active = 'historial'; currentContent = state.contents.find(c => c.id === id); content = detailView(currentContent); break;
-    case 'revision': active = 'historial'; currentContent = state.contents.find(c => c.id === id); content = reviewView(currentContent); break;
-    case 'version': {
-      active = 'historial';
-      const original = state.contents.find(c => c.id === id);
-      const version = original?.versions.find(item => item.number === Number(versionNumber));
-      currentContent = version ? { ...original, text: version.text } : null;
-      content = versionView(original, versionNumber);
-      break;
-    }
-    case 'campanas': content = campaignsView(state); break;
-    case 'campana': {
-      active = 'campanas';
-      const campaign = state.campaigns.find(item => item.id === id);
-      content = id === 'nueva' || campaign ? campaignView(state, campaign) : notFoundView('Campaña no encontrada', 'Selecciona una campaña del listado.', 'Volver a campañas', 'campanas');
-      break;
-    }
-    case 'resultados': content = resultsView(state, params.get('contenido')); break;
+    case 'contenido': active = 'historial'; currentContent = state.contents.find(c => String(c.id) === id); content = detailView(currentContent); break;
     default: content = notFoundView();
   }
   app.replaceChildren(shell(content, active, state.company, loggedIn));
@@ -110,67 +110,81 @@ function render() {
   window.scrollTo(0, 0);
 }
 
-function startGeneration() {
-  if (generationTimer || !lastRequest || !loggedIn) return;
+async function startGeneration() {
+  if (!lastRequest || !loggedIn) return;
   resultStatus = 'processing';
   currentContent = null;
   navigate('resultado');
-  generationTimer = setTimeout(() => {
-    generationTimer = null;
-    try {
-      currentContent = createExample(lastRequest.company, lastRequest.product, lastRequest.goal, lastRequest.options);
-      // No se añade otra entrada al consultar o reintentar el guardado.
-      state.contents.push(currentContent);
-      resultStatus = persist() ? 'saved' : 'pending';
-    } catch {
-      resultStatus = 'error';
-    }
-    if (location.hash === '#/resultado') render();
-  }, 1000);
+  try {
+    const result = await api.createContent(lastRequest.productId, lastRequest.goal);
+    currentContent = result.content;
+    state.contents.unshift(currentContent);
+    resultStatus = 'saved';
+  } catch (error) {
+    resultStatus = 'error';
+    notify(error.message);
+  }
+  if (location.hash === '#/resultado') render();
 }
 
-app.addEventListener('submit', event => {
+app.addEventListener('submit', async event => {
   event.preventDefault();
   const form = event.target;
   if (!validateForm(form)) return;
-  const values = Object.fromEntries([...new FormData(form)].map(([key, value]) => [key, String(value).trim()]));
+  const values = Object.fromEntries([...new FormData(form)].map(([key, value]) => [
+    key,
+    key === 'password' ? String(value) : String(value).trim(),
+  ]));
   const intent = event.submitter?.value;
   if (form.id === 'library-form') {
     navigate(`historial?${new URLSearchParams(Object.entries(values).filter(([, value]) => value))}`);
     return;
   }
   if (form.id === 'login-form') {
-    loggedIn = true;
-    try { sessionStorage.setItem('contentai-demo-session', 'active'); } catch { /* Sesión en memoria. */ }
-    form.reset();
-    navigate('panel');
+    try {
+      const response = await api.login(values.email, values.password);
+      state = response.state;
+      loggedIn = true;
+      form.reset();
+      formDirty = false;
+      navigate(initialRoute());
+    } catch (error) {
+      notify(error.message);
+    }
     return;
   }
   if (form.id === 'company-form') {
-    state.company = values;
-    const saved = persist();
-    if (!saved) return;
-    formDirty = false;
-    if (saved) notify('Datos de empresa guardados en este navegador.');
-    if (intent === 'continue') navigate('productos');
-    else render();
+    try {
+      const response = await api.saveCompany(values);
+      state.company = response.company;
+      formDirty = false;
+      notify('Datos de empresa guardados en la base de datos.');
+      if (intent === 'continue') navigate('productos');
+      else render();
+    } catch (error) {
+      notify(error.message);
+    }
+    return;
   }
   if (form.id === 'product-form') {
-    const id = form.dataset.id || crypto.randomUUID();
-    const product = { ...values, id };
-    const index = state.products.findIndex(p => p.id === id);
-    if (index < 0) state.products.push(product);
-    else state.products[index] = product;
-    if (!persist()) return;
-    formDirty = false;
-    notify('Producto o servicio guardado en este navegador.');
-    navigate(intent === 'generate' ? `generar?producto=${encodeURIComponent(id)}` : 'productos');
+    try {
+      const response = await api.saveProduct(values, form.dataset.id);
+      const index = state.products.findIndex(product => String(product.id) === String(response.product.id));
+      if (index < 0) state.products.push(response.product);
+      else state.products[index] = response.product;
+      formDirty = false;
+      notify('Producto o servicio guardado en la base de datos.');
+      navigate(intent === 'generate' ? `generar?producto=${encodeURIComponent(response.product.id)}` : 'productos');
+    } catch (error) {
+      notify(error.message);
+    }
+    return;
   }
   if (form.id === 'generation-form' && hasRequirements(state)) {
-    const product = state.products.find(p => p.id === values.product);
+    const product = state.products.find(p => String(p.id) === values.product);
     if (!product) return;
-    lastRequest = { company: structuredClone(state.company), product: structuredClone(product), goal: values.goal, options: structuredClone({ type: values.contentType, campaign: state.campaigns.find(item => item.id === values.campaign) || null, channel: state.channels.find(item => item.id === values.channel) || null }) };
-    startGeneration();
+    lastRequest = { productId: product.id, goal: values.goal };
+    await startGeneration();
   }
   if (form.id === 'review-form') {
     const content = state.contents.find(item => item.id === form.dataset.id);
@@ -240,6 +254,13 @@ app.addEventListener('reset', event => {
 
 app.addEventListener('keydown', event => {
   if (event.key !== 'Escape') return;
+  const help = app.querySelector('[data-action="field-help"][aria-expanded="true"]');
+  if (help) {
+    event.preventDefault();
+    help.click();
+    help.focus();
+    return;
+  }
   const menu = app.querySelector('[data-action="menu"][aria-expanded="true"]');
   if (!menu) return;
   app.querySelector('#navigation').classList.remove('is-open');
@@ -258,6 +279,12 @@ app.addEventListener('click', async event => {
   const target = event.target.closest('[data-action]');
   if (!target) return;
   switch (target.dataset.action) {
+    case 'field-help': {
+      const expanded = target.getAttribute('aria-expanded') !== 'true';
+      target.setAttribute('aria-expanded', String(expanded));
+      document.getElementById(target.getAttribute('aria-controls')).hidden = !expanded;
+      break;
+    }
     case 'motion':
       sceneMotionPaused = !sceneMotionPaused;
       updateSceneMotion();
@@ -279,20 +306,25 @@ app.addEventListener('click', async event => {
     }
     case 'logout':
       if (formDirty && !window.confirm('Hay cambios sin guardar. ¿Quieres cerrar la sesión de demostración?')) return;
-      formDirty = false;
-      clearTimeout(generationTimer);
-      generationTimer = null;
-      currentContent = null;
-      lastRequest = null;
-      loggedIn = false;
-      try { sessionStorage.removeItem('contentai-demo-session'); } catch { /* Sesión en memoria. */ }
-      navigate('login');
+      try {
+        await api.logout();
+        formDirty = false;
+        currentContent = null;
+        lastRequest = null;
+        state = emptyState();
+        loggedIn = false;
+        navigate('login');
+        try {
+          storage?.removeItem('contentai-pyme-prototype-v1');
+        } catch {
+          notify('Sesión cerrada. No se pudo limpiar el almacenamiento local antiguo.');
+        }
+      } catch (error) {
+        notify(error.message);
+      }
       break;
     case 'check': render(); break;
     case 'retry': startGeneration(); break;
-    case 'save-again':
-      if (persist()) { resultStatus = 'saved'; render(); notify('Contenido guardado en tu historial.'); }
-      break;
     case 'copy':
       if (!currentContent) return;
       try {
@@ -315,14 +347,23 @@ async function start() {
   try {
     if (!loggedIn) showLoginLoader();
     await loadTemplates();
-    window.addEventListener('hashchange', render);
-    document.querySelector('#startup-status')?.remove();
-    render();
   } catch (error) {
     hideLoginLoader();
     console.error('No se pudo iniciar el prototipo.', error);
     app.replaceChildren(document.querySelector('#startup-error').content.cloneNode(true));
+    return;
   }
+  try {
+    await api.initializeApi();
+    const response = await api.getSession();
+    state = response.state;
+    loggedIn = true;
+  } catch (error) {
+    if (error.status !== 401) notify(error.message);
+  }
+  window.addEventListener('hashchange', render);
+  document.querySelector('#startup-status')?.remove();
+  render();
 }
 
 start();

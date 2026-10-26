@@ -3,7 +3,7 @@ import { cloneTemplate, bindText } from './templates.js';
 export function shell(content, active, company, loggedIn) {
   const view = cloneTemplate(loggedIn ? 'app-shell' : 'auth-shell');
   if (loggedIn) {
-    bindText(view, { account: `${company.name || 'Mi negocio'} · Datos de ejemplo`, companyName: company.name || 'Mi negocio' });
+    bindText(view, { account: company.name || 'Mi negocio', companyName: company.name || 'Mi negocio' });
     for (const item of view.querySelectorAll('[data-route]')) {
       if (item.dataset.route === active) item.setAttribute('aria-current', 'page');
     }

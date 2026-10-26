@@ -7,27 +7,27 @@
   place-items: center;
   min-height: 100dvh;
   padding: 24px;
-  background: #08070e;
-  color: #f5f2ff;
+  background: #f8fafc;
+  color: #0f172a;
   opacity: 1;
   transition: opacity 180ms var(--ease-out);
 }
 .login-loader.is-leaving { opacity: 0; pointer-events: none; }
 .login-loader-content { display: grid; justify-items: center; gap: 24px; }
 .login-loader-mark { position: relative; width: 120px; height: 116px; }
-.loader-line { position: absolute; width: 4px; background: #ece1ff; transform-origin: 50% 50%; }
+.loader-line { position: absolute; width: 4px; background: #1d4ed8; transform-origin: 50% 50%; }
 .loader-line-outer-left, .loader-line-outer-right { top: 40px; height: 70px; }
 .loader-line-inner-left, .loader-line-inner-right { top: 8px; height: 108px; }
 .loader-line-outer-left { left: 21px; transform: rotate(25deg); animation: loader-left 650ms var(--ease-out) 60ms both; }
 .loader-line-inner-left { left: 58px; transform: rotate(25deg); animation: loader-left 650ms var(--ease-out) 180ms both; }
 .loader-line-inner-right { left: 58px; transform: rotate(-25deg); animation: loader-right 650ms var(--ease-out) 240ms both; }
 .loader-line-outer-right { left: 95px; transform: rotate(-25deg); animation: loader-right 650ms var(--ease-out) 120ms both; }
-.loader-core { position: absolute; left: 50px; top: 83px; width: 20px; height: 20px; background: #b87aff; box-shadow: 0 0 28px #9b48ff66; transform: rotate(45deg); animation: loader-core 450ms var(--ease-out) 300ms both; }
+.loader-core { position: absolute; left: 50px; top: 83px; width: 20px; height: 20px; background: #1d4ed8; box-shadow: none; transform: rotate(45deg); animation: loader-core 450ms var(--ease-out) 300ms both; }
 .login-loader-wordmark { font-size: clamp(20px, 5vw, 26px); line-height: 1.3; font-weight: 500; letter-spacing: -.7px; animation: loader-wordmark 250ms var(--ease-out) 650ms both; }
-.login-loader-wordmark span { color: #b87aff; margin: 0 3px; }
-.login-loader-status { color: #b9b3cc; font-size: 10px; letter-spacing: 1.6px; text-align: center; animation: loader-wordmark 200ms var(--ease-out) 750ms both; }
-.login-loader-skip { position: absolute; bottom: max(24px, env(safe-area-inset-bottom)); min-height: 44px; padding: 10px 16px; border: 0; background: transparent; color: #b9b3cc; font-size: 11px; text-decoration: underline; text-underline-offset: 4px; }
-.login-loader :focus-visible { outline: 2px solid #c69bff; outline-offset: 4px; }
+.login-loader-wordmark span { color: #1d4ed8; margin: 0 3px; }
+.login-loader-status { color: #475569; font-size: 12px; letter-spacing: .2px; text-align: center; animation: loader-wordmark 200ms var(--ease-out) 750ms both; }
+.login-loader-skip { position: absolute; bottom: max(24px, env(safe-area-inset-bottom)); min-height: 44px; padding: 10px 16px; border: 0; background: transparent; color: #475569; font-size: 11px; text-decoration: underline; text-underline-offset: 4px; }
+.login-loader :focus-visible { outline: 2px solid #2563eb; outline-offset: 4px; }
 @keyframes loader-left {
   from { opacity: 0; transform: translate3d(-30px, 22px, 0) rotate(0deg) scaleY(.35); }
   to { opacity: 1; transform: translate3d(0, 0, 0) rotate(25deg) scaleY(1); }
@@ -44,7 +44,7 @@
   from { opacity: 0; transform: translate3d(0, 8px, 0); }
   to { opacity: 1; transform: translate3d(0, 0, 0); }
 }
-@media (hover: hover) and (pointer: fine) { .login-loader-skip:hover { color: #fff; } }
+@media (hover: hover) and (pointer: fine) { .login-loader-skip:hover { color: #0f172a; } }
 @media (prefers-reduced-motion: reduce) {
   .login-loader-content * { animation: none; }
   .login-loader { transition-duration: 120ms; }

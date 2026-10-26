@@ -3,7 +3,7 @@
     <h1 id="page-title" tabindex="-1">Mi empresa</h1>
     <p>Guarda el contexto que utilizará la IA para redactar.</p>
   </header>
-  <p class="help">* Campos obligatorios. · Datos de ejemplo.</p>
+  <p class="help">* Campos obligatorios. Los cambios se guardan en la base de datos.</p>
   <form id="company-form" novalidate>
     <section class="section">
       <h2>Empresa</h2>
@@ -18,7 +18,17 @@
         <small class="field-error" id="activity-error" hidden></small>
       </div>
       <div class="field">
-        <label for="description">Descripción del negocio (opcional)</label>
+        <div class="field-label-row">
+          <label for="description">Descripción del negocio (opcional)</label>
+          <button type="button" class="field-help-toggle" data-action="field-help" aria-label="Ayuda para escribir la descripción del negocio" aria-expanded="false" aria-controls="business-description-help"><span aria-hidden="true">!</span></button>
+        </div>
+        <div id="business-description-help" class="field-help-panel stack" hidden>
+          <h3>¿Cómo describir tu negocio?</h3>
+          <p>En 2 a 4 frases, explica qué ofreces, a quién ayudas y cómo trabaja tu negocio. Puedes mencionar qué te diferencia, siempre que sea información real.</p>
+          <p class="help">Ejemplo ficticio: TecnoBarrio</p>
+          <blockquote>Somos un negocio de mantenimiento de computadoras para pequeños comercios de la zona. Ofrecemos limpieza interna y revisión básica para ayudar a prevenir fallas por acumulación de polvo. Atendemos de forma cercana y profesional.</blockquote>
+          <p class="help">Adáptalo a tu negocio. No incluyas precios, descuentos o garantías que no puedas confirmar.</p>
+        </div>
         <textarea id="description" name="description" placeholder="Describe tu negocio" rows="3"></textarea>
       </div>
     </section>

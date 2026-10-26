@@ -1,5 +1,5 @@
 import { cloneTemplate, bindText, fillForm } from '../components/templates.js';
-import { hasRequirements, CONTENT_TYPES, EDITORIAL_STATES, filterContents, getProfileProgress } from '../data/store.js';
+import { hasRequirements, filterContents, getProfileProgress } from '../data/store.js';
 
 function addOptions(select, items) {
   for (const item of items) select.add(new Option(typeof item === 'string' ? item : item.name, typeof item === 'string' ? item : item.id));
@@ -69,7 +69,7 @@ export function productView(product) {
   return view;
 }
 
-export function contextView(company, product, campaign, channel) {
+export function contextView(company, product) {
   const restrictions = [...new Set([company.restrictions, product.restrictions].filter(Boolean))].join(' · ');
   return bindText(cloneTemplate('context-panel'), {
     company: `${company.name} · ${company.activity}`,
@@ -78,43 +78,27 @@ export function contextView(company, product, campaign, channel) {
     audience: `Público · ${company.audience}`,
     tone: `Tono · ${company.tone}`,
     restrictions: `Restricciones · ${restrictions || 'Sin restricciones adicionales'}`,
-    campaign: `Campaña · ${campaign ? `${campaign.name} · Público: ${campaign.audience}` : 'Sin campaña'}`,
-    channel: `Canal · ${channel?.name || 'Sin canal específico'}`,
   });
 }
 
-export function generatorView(state, productId, campaignId, contentType) {
+export function generatorView(state, productId) {
   if (!hasRequirements(state)) {
     return bindText(cloneTemplate('page-requirements'), { products: `Producto o servicio: ${state.products.length ? 'registrado.' : 'falta registrar uno.'}` });
   }
   const view = cloneTemplate('page-generator');
-  const product = state.products.find(p => p.id === productId) || state.products[0];
+  const product = state.products.find(p => String(p.id) === productId) || state.products[0];
   const products = view.querySelector('#product');
   for (const item of state.products) products.add(new Option(item.name, item.id));
   products.value = product.id;
   view.querySelector('#audience').add(new Option(state.company.audienceName, state.company.audienceName));
-  addOptions(view.querySelector('#contentType'), CONTENT_TYPES);
-  if (CONTENT_TYPES.includes(contentType)) view.querySelector('#contentType').value = contentType;
-  addOptions(view.querySelector('#campaign'), state.campaigns);
-  const campaign = state.campaigns.find(item => item.id === campaignId);
-  if (campaign) {
-    view.querySelector('#campaign').value = campaign.id;
-    view.querySelector('#goal').value = campaign.goal;
-  }
-  updateGeneratorContext(view, state, true);
+  updateGeneratorContext(view, state);
   return view;
 }
 
-export function updateGeneratorContext(root, state, resetChannels = false) {
-  const product = state.products.find(item => item.id === root.querySelector('#product').value);
-  const campaign = state.campaigns.find(item => item.id === root.querySelector('#campaign').value);
-  const channelSelect = root.querySelector('#channel');
-  if (resetChannels) {
-    channelSelect.replaceChildren(new Option('Sin canal específico', ''));
-    addOptions(channelSelect, campaign?.channelIds?.length ? state.channels.filter(item => campaign.channelIds.includes(item.id)) : state.channels);
-  }
-  const channel = state.channels.find(item => item.id === channelSelect.value);
-  root.querySelector('#context').replaceChildren(contextView(state.company, product, campaign, channel));
+export function updateGeneratorContext(root, state) {
+  const product = state.products.find(item => String(item.id) === root.querySelector('#product').value);
+  if (!product) return;
+  root.querySelector('#context').replaceChildren(contextView(state.company, product));
 }
 
 export function contentReader(content) {
@@ -136,28 +120,23 @@ export function resultView(content, status = 'saved') {
   const detail = view.querySelector('[data-link="detail"]');
   detail.href = `#/contenido/${encodeURIComponent(content.id)}`;
   detail.hidden = pending;
-  view.querySelector('[data-action="save-again"]').hidden = !pending;
   return view;
 }
 
 export function historyView(state, filters = {}) {
   const view = cloneTemplate('page-history');
-  const contents = filterContents(state.contents, filters);
-  addOptions(view.querySelector('#filter-type'), CONTENT_TYPES);
-  addOptions(view.querySelector('#filter-status'), EDITORIAL_STATES);
-  addOptions(view.querySelector('#filter-campaign'), state.campaigns);
-  fillForm(view.querySelector('form'), filters);
+  const contents = filterContents(state.contents, { search: filters.search });
+  fillForm(view.querySelector('#library-form'), filters);
   bindText(view, { count: `${contents.length} contenido(s) encontrado(s)` });
   view.querySelector('[data-state="empty"]').hidden = contents.length > 0;
   if (state.contents.length && !contents.length) bindText(view, { emptyTitle: 'No hay coincidencias', emptyDescription: 'Prueba con otros filtros o limpia la búsqueda.' });
   const list = view.querySelector('[data-list="contents"]');
-  for (const content of [...contents].reverse()) {
+  for (const content of [...contents].sort((left, right) => new Date(right.createdAt) - new Date(left.createdAt))) {
     const item = bindText(cloneTemplate('history-item'), {
       title: `${content.product.name} · ${content.type}`,
       date: new Date(content.createdAt).toLocaleString('es-PE'),
       excerpt: `${content.text.slice(0, 160)}…`,
       status: content.status,
-      campaign: `Campaña: ${content.campaign?.name || 'Sin campaña'}`,
     });
     item.querySelector('time').dateTime = content.createdAt;
     item.querySelector('[data-link="detail"]').href = `#/contenido/${encodeURIComponent(content.id)}`;
@@ -175,8 +154,6 @@ export function detailView(content) {
     status: content.status, campaign: content.campaign?.name || 'Sin campaña', channel: content.channel?.name || 'Sin canal específico',
   });
   view.querySelector('[data-component="reader"]').replaceWith(contentReader(content));
-  view.querySelector('[data-link="review"]').href = `#/revision/${content.id}`;
-  view.querySelector('[data-link="results"]').href = `#/resultados?contenido=${content.id}`;
   return view;
 }
 

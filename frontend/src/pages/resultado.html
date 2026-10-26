@@ -6,8 +6,8 @@
   <section class="result-section">
     <h2>Resultado</h2>
     <dl><div><dt>Contexto de generación</dt><dd data-bind="context"></dd></div></dl>
-    <div class="notice success" role="status" data-state="saved">Contenido de demostración guardado en tu historial</div>
-    <div class="notice warning" role="status" data-state="pending" hidden>Guardado pendiente: no se pudo guardar en este navegador. El borrador sigue disponible en esta sesión.</div>
+    <div class="notice success" role="status" data-state="saved">Borrador guardado y disponible en el historial.</div>
+    <div class="notice warning" role="status" data-state="pending" hidden>No se pudo confirmar el guardado en el servidor.</div>
     <div data-component="reader"></div>
     <h2>Revisión</h2>
     <p>Revisa el texto antes de utilizarlo. La IA puede cometer errores.</p>
@@ -15,7 +15,6 @@
   <div class="actions">
     <button type="button" class="button primary" data-action="copy">Copiar texto</button>
     <a class="button" data-link="detail">Ver contenido guardado</a>
-    <button type="button" class="button" data-action="save-again" hidden>Volver a consultar estado</button>
     <a class="button" href="#/historial">Ir al historial</a>
     <a class="button" href="#/generar">Crear otro contenido</a>
   </div>

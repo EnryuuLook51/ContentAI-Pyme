@@ -1,13 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 190" fill="none" role="img" aria-labelledby="logo-wordmark-title">
   <title id="logo-wordmark-title">ContentAI-PYME</title>
   <g transform="translate(80 8)">
-    <g fill="#ECE1FF">
+    <g fill="#1D4ED8">
       <rect x="21" y="40" width="4" height="70" transform="rotate(25 23 75)"/>
       <rect x="58" y="8" width="4" height="108" transform="rotate(25 60 62)"/>
       <rect x="58" y="8" width="4" height="108" transform="rotate(-25 60 62)"/>
       <rect x="95" y="40" width="4" height="70" transform="rotate(-25 97 75)"/>
     </g>
-    <rect x="50" y="83" width="20" height="20" fill="#B87AFF" transform="rotate(45 60 93)"/>
+    <rect x="50" y="83" width="20" height="20" fill="#1E40AF" transform="rotate(45 60 93)"/>
   </g>
-  <text x="140" y="168" text-anchor="middle" fill="#F5F2FF" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="26" font-weight="500" letter-spacing="-.7">ContentAI<tspan fill="#B87AFF" dx="3">—</tspan><tspan dx="3">PYME</tspan></text>
+  <text x="140" y="168" text-anchor="middle" fill="#0F172A" font-family="Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="26" font-weight="500" letter-spacing="-.7">ContentAI<tspan fill="#1D4ED8" dx="3">—</tspan><tspan dx="3">PYME</tspan></text>
 </svg>
