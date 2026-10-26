@@ -34,6 +34,19 @@ php -S localhost:8000 router.php
 
 Comprueba `http://localhost:8000/api/v1/health`; debe responder `{"status":"ok","database":"connected"}`. Usa `http://localhost:5173` para compartir el origen CORS configurado. Para HTTPS, activa `SESSION_SECURE=true`.
 
+## Estructura
+
+`public/index.php` es el front controller: carga el autoload propio y convierte los errores en respuestas JSON. El resto del código vive en `src/`, separado por capas:
+
+- `App.php`: composición de dependencias y tabla de rutas.
+- `Http/`: `Request`, `Response`, `Router`, `Cors` y los controladores.
+- `Security/`: sesión PHP, token CSRF y autorización por usuario/empresa.
+- `Repositories/`: consultas PDO; la conexión se abre en el primer uso.
+- `Services/`: validación y reglas de negocio; `Services/Generation/` define la interfaz del generador y su implementación simulada.
+- `Support/`: errores de API, validación y conexión a MySQL.
+
+No usa Composer ni frameworks: `src/bootstrap.php` registra un autoload propio para el prefijo `ContentAI\`. El código se apoya en los temas del curso (HTTP, cookies/sesiones, PHP, POO y PDO/MySQL), sin dependencias externas.
+
 ## Rutas implementadas
 
 - `GET /api/v1/csrf`, `POST /api/v1/login`, `GET /api/v1/session`, `POST /api/v1/logout`.
